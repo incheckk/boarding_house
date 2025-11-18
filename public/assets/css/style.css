@@ -1,0 +1,307 @@
+body {
+    margin: 0;
+    line-height: 1.6;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #f7f7f7;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* NAVBAR */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 18px 40px;
+    background: #222;
+    color: white;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+.nav-links a:hover {
+    color: #ffd700;
+}
+
+.nav-menu a.active {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+.main-header {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background: #333;
+    transition: background 0.3s ease;
+}
+
+body.scrolled .main-header {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+
+/* PAGES */
+main {
+    padding: 40px;
+}
+
+h1, h2 {
+    margin-top: 0;
+}
+
+/* Rooms Page */
+.rooms-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;;
+}
+
+.room-card {
+    flex: 1 1 calc(33% - 20px);
+    background: #fff;
+    border-radius: 10px;
+    text-align: center;
+    padding: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.room-card img {
+    width: 100%;
+    border-radius: 10px;
+}
+.room-card .button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 20px;
+    background-color: #0056b3;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    background: #222;
+    color: white;
+}
+
+/* HERO SECTION */
+.hero {
+    background: url('/boarding_house/public/assets/images/slogan1.jpg') center/cover no-repeat;
+    padding: 120px 30px;
+    color: white;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50vh
+}
+
+.hero h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+
+.hero-btn {
+    background: #ffd700;
+    padding: 10px 30px;
+    color: black;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+.hero-btn:hover {
+    background: #e6c200;
+}
+
+/* ====== Why Choose Us ====== */
+.why-choose-us {
+    padding: 50px 0;
+    text-align: center;
+}
+.why-choose-us ul {
+    list-style: none;
+    padding: 0;
+}
+.why-choose-us li {
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+/* ====== About Us ====== */
+.aboutus-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+}
+.aboutus-text, .aboutus-image {
+    flex: 1 1 50%;
+}
+.aboutus-image img {
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+/* ====== Gallery ====== */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+.gallery-grid img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+/* ====== Fun Facts ====== */
+.facts-grid {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.facts-grid .fact h3 {
+    font-size: 2.5em;
+    margin: 0;
+}
+
+/* ====== Testimonials ====== */
+.testimonials-slider {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+}
+.testimonial {
+    flex: 0 0 300px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* ====== Contact ====== */
+.contact-flex {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.contact-map, .contact-info {
+    flex: 1 1 50%;
+}
+.contact-info h4 {
+    margin-top: 0;
+}
+
+/* ================ HEADER & NAVBAR ================== */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background: #333;
+    color: white;
+}
+
+.logo a {
+    color: white;
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* Desktop Menu */
+.nav-menu {
+    display: flex;
+    gap: 25px;
+}
+
+.nav-menu a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.nav-menu a:hover {
+    color: #ffd700;
+}
+
+/* Hamburger (Hidden on Desktop) */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.hamburger span {
+    width: 28px;
+    height: 3px;
+    background: white;
+    transition: 0.3s;
+}
+
+/* ================ MOBILE RESPONSIVE ================== */
+@media (max-width: 768px) {
+
+    /* Hamburger Visible */
+    .hamburger {
+        display: flex;
+    }
+
+    .nav-menu {
+        position: absolute;
+        top: 65px;
+        right: 0;
+        background: #333;
+        width: 100%;
+        flex-direction: column;
+        gap: 15px;
+        overflow: hidden;
+        max-height: 0; /* Hidden initially */
+        transition: max-height 0.5s ease-in-out; /* Smooth slide */
+    }
+
+    .nav-menu a {
+        font-size: 18px;
+        padding: 10px 20px;
+    }
+
+    /* When menu is open */
+    .nav-menu.nav-open {
+        max-height: 500px; /* Adjust based on menu length */
+    }
+}
+
+/* Animate Hamburger to X */
+.hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 5px);
+}
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+.hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -5px);
+}

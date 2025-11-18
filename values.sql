@@ -163,6 +163,15 @@ CREATE TABLE notifications_log (
     FOREIGN KEY (tenant_id) REFERENCES tenant(tenant_id) ON DELETE SET NULL
 );
 
+-- blog posts
+CREATE TABLE blog (
+    blog_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    date_posted TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    image VARCHAR(255) -- optional, store image filename/path
+);
+
 -- small indexes for performance
 CREATE INDEX idx_room_status ON room(rstat_id);
 CREATE INDEX idx_tenant_status ON tenant(tstat_id);
