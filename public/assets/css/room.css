@@ -1,0 +1,58 @@
+/* Page Header */
+.page-header {
+    padding: 40px 0;
+    text-align: center;
+    color: #fff;
+    background: linear-gradient(135deg, #0d6efd, #6610f2);
+}
+.page-title {
+    font-size: 32px;
+    font-weight: bold;
+}
+.page-description {
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+/* Breadcrumbs */
+.breadcrumbs-area {
+    background: #f7f7f7;
+    padding: 10px 0;
+}
+.breadcrumbs a {
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+/* Room Details */
+.details-area {
+    padding: 40px 0;
+}
+.main-image {
+    width: 30%;
+    border-radius: 10px;
+    margin-bottom: 25px;
+}
+
+/* Text Content */
+.details-content .title {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+.details-list {
+    list-style: none;
+    padding: 0;
+}
+.details-list li {
+    padding: 10px 0;
+    font-size: 16px;
+    border-bottom: 1px solid #eee;
+}
+.details-list span {
+    font-weight: bold;
+}
+
+.reserve-btn:hover {
+    background: #0056d2;
+}
+

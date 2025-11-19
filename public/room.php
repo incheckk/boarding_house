@@ -20,12 +20,58 @@ $stmt->execute([$id]);
 $room = $stmt->fetch();
 ?>
 
-<h1>Room <?= $room['room_number'] ?></h1>
-<p><b>Size:</b> <?= $room['room_size'] ?></p>
-<p><b>Rate:</b> ₱<?= number_format($room['room_rate'],2) ?></p>
-<p><b>Status:</b> <?= $room['rstat_desc'] ?></p>
-<p><b>Amenities:</b> <?= $room['amenities'] ?></p>
+<!-- ====== Page Header ====== -->
+<div class="page-header default-template-gradient">
+    <div class="container">
+        <h2 class="page-title">Room <?= htmlspecialchars($room['room_number']) ?></h2>
+        <p class="page-description">Room Information & Details</p>
+    </div>
+</div>
 
-<a href="reservation.php?room_id=<?= $room['room_id'] ?>" class="reserve-btn">Reserve Now</a>
+<!-- ====== Breadcrumbs ====== -->
+<div class="breadcrumbs-area">
+    <div class="container">
+        <div class="breadcrumbs">
+            <span class="first-item"><a href="index.php">Home</a></span>
+            <span class="separator">></span>
+            <span class="last-item">Room <?= htmlspecialchars($room['room_number']) ?></span>
+        </div>
+    </div>
+</div>
+
+<!-- ====== Room Details ====== -->
+<div class="details-area">
+    <div class="container">
+
+        <!-- ROOM IMAGE -->
+        <div class="gallery-header">
+            <img src="./assets/images/Room.png" 
+                 onerror="this.src='./assets/images/Room.png';"
+                 alt="Room <?= htmlspecialchars($room['room_number']) ?>" 
+                 class="main-image">
+        </div>
+
+        <!-- ROOM INFO -->
+        <div class="details-content">
+            <h3 class="title">Room Details</h3>
+
+            <ul class="details-list">
+                <li><span>Room Number:</span> <?= htmlspecialchars($room['room_number']) ?></li>
+                <li><span>Size:</span> <?= htmlspecialchars($room['room_size']) ?></li>
+                <li><span>Rate:</span> ₱<?= number_format($room['room_rate'], 2) ?></li>
+                <li><span>Status:</span> <?= htmlspecialchars($room['rstat_desc']) ?></li>
+                <li><span>Bed Type:</span> <?= htmlspecialchars($room['bed_type'] ?? "Single Bed") ?></li>
+                <li><span>Amenities:</span> <?= htmlspecialchars($room['amenities'] ?: "None") ?></li>
+            </ul>
+
+            <a href="reservation.php?room_id=<?= $room['room_id'] ?>" 
+               class="reserve-btn">
+               Reserve This Room
+            </a>
+        </div>
+
+    </div>
+</div>
+
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

@@ -1,12 +1,12 @@
 <?php 
-$pageTitle = "Home - Boarding House";
+$pageTitle = "Home";
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <!-- ====== Hero Section ====== -->
 <section class="hero">
     <div class="hero-text">
-        <h1>Welcome to Our Boarding House</h1>
+        <h1>Welcome to CASA VILLAGRACIA</h1>
         <p>Comfortable, clean, and affordable rooms.</p>
         <a href="rooms.php" class="hero-btn">View Rooms</a>
     </div>

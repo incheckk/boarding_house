@@ -1,6 +1,6 @@
 <?php
 $currentPage = basename($_SERVER['PHP_SELF']); // e.g., index.php
-if (!isset($pageTitle)) { $pageTitle = "Boarding House"; }
+if (!isset($pageTitle)) { $pageTitle = "CASA VILLAGRACIA"; }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -8,6 +8,9 @@ if (!isset($pageTitle)) { $pageTitle = "Boarding House"; }
     <meta charset="UTF-8">
     <title><?= htmlspecialchars($pageTitle) ?></title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/rooms.css">
+    <link rel="stylesheet" href="assets/css/room.css">
+    <link rel="stylesheet" href="assets/css/reservation.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
