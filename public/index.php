@@ -7,40 +7,29 @@ require_once __DIR__ . '/../includes/header.php';
 <section class="hero">
     <div class="hero-text">
         <h1>Welcome to CASA VILLAGRACIA</h1>
-        <p>Comfortable, clean, and affordable rooms.</p>
+        <p>Comfortable, safe, and affordable rooms.</p>
         <a href="rooms.php" class="hero-btn">View Rooms</a>
-    </div>
-</section>
-
-<!-- ====== Why Choose Us ====== -->
-<section class="why-choose-us">
-    <div class="container">
-        <h2>Why Choose Us?</h2>
-        <ul>
-            <li>✔ Affordable rates</li>
-            <li>✔ Safe & secure</li>
-            <li>✔ Near schools & workplaces</li>
-            <li>✔ Friendly staff</li>
-        </ul>
     </div>
 </section>
 
 <!-- ====== Availability Section ====== --> 
 <section class="availability-area bg-white-smoke">
     <div class="container">
-        <h2>Check Room Availability</h2>
+        <h2>For rates & Availability</h2>
+        <h3>Search your ROOM</h3>
         <form action="rooms.php" method="get" class="availability-form">
             <label>Room Type
                 <select name="type">
+                    <option value="">Any</option>
                     <option value="single">Single</option>
                     <option value="double">Double</option>
                     <option value="bunk">Bunk Bed</option>
                 </select>
             </label>
-            <label>Price Min
+            <label>Price (Min)
                 <input type="number" name="price_min" placeholder="₱0">
             </label>
-            <label>Price Max
+            <label>Price (Max)
                 <input type="number" name="price_max" placeholder="₱0">
             </label>
             <button type="submit">Check Availability</button>
@@ -53,21 +42,44 @@ require_once __DIR__ . '/../includes/header.php';
     <div class="container">
         <h2>About Us</h2>
         <div class="aboutus-flex">
-            <div class="aboutus-text">
-                <p>We provide clean, safe, and comfortable rooms for students, professionals, and travelers. Enjoy a homely environment with friendly staff.</p>
-                <ul>
-                    <li>Affordable pricing options</li>
-                    <li>24/7 security</li>
-                    <li>Fully furnished rooms</li>
-                    <li>Fast Wi-Fi access</li>
+            
+            <!-- LEFT: Tabs -->
+            <div class="aboutus-tabs-area">
+                <ul class="aboutus-tabs">
+                    <li class="tab active" data-content="company">About Company</li>
+                    <li class="tab" data-content="terms">Terms & Condition</li>
+                    <li class="tab" data-content="specialty">Our Specialty</li>
+                    <li class="tab" data-content="services">Our Services</li>
                 </ul>
             </div>
+
+            <!-- CENTER: Description -->
+            <div class="aboutus-description">
+                <div id="company" class="content active">
+                    <p>We provide clean, safe, and comfortable rooms for families, students, and professionals. Enjoy a homely environment with friendly staff.</p>
+                </div>
+                <div id="terms" class="content">
+                    <p>All bookings are subject to our terms and conditions. Please read carefully before making a reservation.</p>
+                </div>
+                <div id="specialty" class="content">
+                    <p>Our specialty includes affordable pricing, 24/7 security, fully furnished rooms, and fast Wi-Fi access.</p>
+                </div>
+                <div id="services" class="content">
+                    <p>We offer additional services such as laundry, housekeeping, and guided local tours for our tenants.</p>
+                </div>
+            </div>
+
+            <!-- RIGHT: Image -->
             <div class="aboutus-image">
                 <img src="assets/images/about-image.png" alt="about" />
             </div>
+
         </div>
     </div>
 </section>
+
+
+
 
 <!-- ====== Rooms Section ====== --> 
 <section class="rooms-area bg-gray-color">
