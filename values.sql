@@ -175,3 +175,34 @@ CREATE TABLE blog (
 -- small indexes for performance
 CREATE INDEX idx_room_status ON room(rstat_id);
 CREATE INDEX idx_tenant_status ON tenant(tstat_id);
+
+
+INSERT INTO room_status (rstat_id, rstat_desc)
+VALUES 
+(1, 'Available'),
+(2, 'Occupied'),
+(3, 'Reserved');
+
+INSERT INTO room (room_number, room_size, room_rate, rstat_id)
+VALUES
+('101', 'Single Bed', 1800.00, 1),
+('102', 'Single Bed', 1800.00, 1),
+('103', 'Single Bed', 1800.00, 1),
+('104', 'Single Bed', 1800.00, 1),
+('105', 'Single Bed', 1800.00, 1),
+('106', 'Single Bed', 1800.00, 1),
+('107', 'Single Bed', 1800.00, 1),
+('108', 'Single Bed', 1800.00, 1),
+('109', 'Single Bed', 1800.00, 1),
+('110', 'Single Bed', 1800.00, 1),
+('111', 'Single Bed', 1800.00, 1);
+
+INSERT INTO room (room_number, room_size, room_rate, rstat_id)
+VALUES
+('201', 'Double Bed', 2000.00, 1),
+('202', 'Double Bed', 2000.00, 1);
+
+INSERT INTO room (room_number, room_size, room_rate, rstat_id)
+VALUES
+('301', 'Bunk Bed', 2200.00, 1),
+('302', 'Bunk Bed', 2200.00, 1);

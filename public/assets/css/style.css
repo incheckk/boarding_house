@@ -60,8 +60,9 @@ body.scrolled .main-header {
 
 
 /* PAGES */
-main {
-    padding: 40px;
+main.content .hero {
+    margin: 0;
+    padding: 0;
 }
 
 h1, h2 {
@@ -108,15 +109,20 @@ footer {
 
 /* HERO SECTION */
 .hero {
-    background: url('/boarding_house/public/assets/images/slogan1.jpg') center/cover no-repeat;
-    padding: 120px 30px;
-    color: white;
-    text-align: center;
+    background: url('/boarding_house/public/assets/images/slogan1.jpg') no-repeat center center/cover;
+    width: 100%;
+    min-height: 100vh; /* full screen */
+    margin: 0;
+    padding: 0;
+
     display: flex;
-    align-items: center;
+    flex-direction: column;
     justify-content: center;
-    height: 50vh
+    align-items: center;
+    text-align: center;
+    color: white;
 }
+
 
 .hero h1 {
     font-size: 3em;
@@ -136,34 +142,171 @@ footer {
     background: #e6c200;
 }
 
-/* ====== Why Choose Us ====== */
-.why-choose-us {
-    padding: 50px 0;
-    text-align: center;
-}
-.why-choose-us ul {
-    list-style: none;
-    padding: 0;
-}
-.why-choose-us li {
-    margin: 10px 0;
-    font-weight: bold;
+/* ===== Availability Section ===== */
+.availability-area {
+    padding: 60px 20px;
+    background: #f5f5f5;
 }
 
+.availability-container {
+    text-align: center;
+}
+
+.availability-area h2 {
+    font-size: 28px;
+    margin-bottom: 5px;
+    text-align: center;
+    margin-bottom: -10px;
+}
+
+.availability-area h3 {
+    font-size: 20px;
+    margin-bottom: 50px;
+    color: #555;
+    text-align: center;
+}
+
+/* FORM CENTER */
+.availability-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    gap: 100px;
+}
+
+/* Label centered */
+.availability-form label {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    font-weight: bold;
+    color: #333;
+    font-size: 15px;
+}
+
+/* Inputs + Select */
+.availability-form select,
+.availability-form input {
+    margin-top: 5px;
+    padding: 10px 15px;
+    width: 180px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* Button */
+.availability-form button {
+    padding: 12px 25px;
+    background: #ffd700;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    color: black;
+    transition: 0.3s;
+    font-size: 17px;
+    margin-top: 15px;
+}
+
+.availability-form button:hover {
+    background: #e6c200;
+}
+
+
 /* ====== About Us ====== */
+.aboutus-area h2 {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 40px;
+}
+
+/* FLEX CONTAINER */
 .aboutus-flex {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 40px; /* space between columns */
+    align-items: flex-start;
+}
+
+/* LEFT: Tabs */
+.aboutus-tabs-area {
+    flex: 1 1 20%;
+}
+
+.aboutus-tabs {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* space between tabs */
+}
+
+.aboutus-tabs li {
+    cursor: pointer;
+    padding: 10px 15px;
+    background: #f5f5f5;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.aboutus-tabs li.active,
+.aboutus-tabs li:hover {
+    background: #ffd700;
+    color: black;
+}
+
+.aboutus-description {
+    flex: 1 1 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* vertical center based on parent flex */
+    text-align: center;
+}
+
+.aboutus-description .content {
+    display: none;
+}
+
+.aboutus-description .content.active {
+    display: block;
+    font-size: 15px;
+    color: #333;
+}
+
+/* RIGHT: Image */
+.aboutus-image {
+    flex: 1 1 35%;
+    display: flex;
+    justify-content: center;
     align-items: center;
 }
-.aboutus-text, .aboutus-image {
-    flex: 1 1 50%;
-}
+
 .aboutus-image img {
     max-width: 100%;
     border-radius: 10px;
 }
+
+/* MOBILE */
+@media (max-width: 768px) {
+    .aboutus-flex {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .aboutus-tabs-area,
+    .aboutus-description,
+    .aboutus-image {
+        flex: 1 1 100%;
+    }
+}
+
 
 /* ====== Gallery ====== */
 .gallery-grid {
@@ -221,33 +364,48 @@ footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 25px;
+    padding: 0px 120px; /* more left & right space */
     background: #333;
     color: white;
+}
+
+/* Logo area */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 17px; /* space between image and text */
+}
+
+.logo img {
+    width: 110px;   /* adjust size */
+    height: auto;
 }
 
 .logo a {
     color: white;
     text-decoration: none;
-    font-size: 22px;
+    font-size: 26px; /* bigger text */
     font-weight: bold;
 }
 
 /* Desktop Menu */
 .nav-menu {
     display: flex;
-    gap: 25px;
+    gap: 80px; /* add more space between menu items */
+    padding: 0px 50px;
 }
 
 .nav-menu a {
     color: white;
     text-decoration: none;
-    font-size: 16px;
+    font-size: 20px; /* bigger letters */
+    font-weight: 500;
 }
 
 .nav-menu a:hover {
     color: #ffd700;
 }
+
 
 /* Hamburger (Hidden on Desktop) */
 .hamburger {
@@ -305,4 +463,43 @@ footer {
 }
 .hamburger.active span:nth-child(3) {
     transform: rotate(-45deg) translate(6px, -5px);
+}
+
+
+/* Controls area */
+.controls {
+  display:flex;
+  gap:12px;
+  align-items:center;
+  margin-bottom:15px;
+}
+
+/* Rooms grid & card already exist; pagination */
+.pagination, #ajaxPagination {
+  margin-top:20px;
+  text-align:center;
+}
+.page-link, .ajax-page {
+  display:inline-block;
+  padding:6px 10px;
+  margin:0 4px;
+  background:#fff;
+  border:1px solid #ddd;
+  border-radius:4px;
+  text-decoration:none;
+  color:#333;
+}
+.page-link.current, .ajax-page.current {
+  background:#005eff;
+  color:#fff;
+  border-color:#005eff;
+}
+.filter-results {
+  margin-bottom:10px;
+  color:#333;
+}
+.no-results {
+  padding: 20px;
+  text-align:center;
+  color:#666;
 }
