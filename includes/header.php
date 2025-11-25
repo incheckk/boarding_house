@@ -11,6 +11,8 @@ if (!isset($pageTitle)) { $pageTitle = "CASA VILLAGRACIA"; }
     <link rel="stylesheet" href="assets/css/rooms.css">
     <link rel="stylesheet" href="assets/css/room.css">
     <link rel="stylesheet" href="assets/css/reservation.css">
+    <link rel="stylesheet" href="assets\css\about.css">
+    <link rel="stylesheet" href="assets\css\contact.css">
     <script src="assets/js/rooms-filter.js"></script>
     <script src="assets/js/about-us.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
