@@ -80,52 +80,6 @@ $profile_image = "malupiton.jpg"
         </div>
     </section>
 
-    <!-- Info Cards Section -->
-    <section class="info-cards">
-        <div class="cards-grid">
-            <!-- About Card -->
-            <div class="card">
-                <h3>About</h3>
-                <div class="card-logo">
-                    <span>🏠 House Rent</span>
-                </div>
-                <p>
-                    We Provide Premium Word Press, Ghost and HTML template. Our Perm tritium Templates is, develop gaped
-                    in a way so that the clients find Support. Themes are developed in a way so that the clients find.
-                </p>
-                <button>More</button>
-            </div>
-
-            <!-- Book Now Card -->
-            <div class="card">
-                <h3>Book Now</h3>
-                <div class="card-logo">
-                    <span>🏠 House Rent</span>
-                </div>
-                <p>
-                    We Provide Premium Word Press, Ghost and HTML template. Our Perm tritium Templates is, develop gaped
-                    in a way so that the clients find Support. Themes are developed in a way so that the clients find.
-                </p>
-                <button>Book Now</button>
-            </div>
-
-            <!-- Instagram Images Card -->
-            <div class="card">
-                <h3>Instagram Image</h3>
-                <div class="instagram-grid">
-                    <div class="instagram-item">118x114</div>
-                    <div class="instagram-item">118x114</div>
-                    <div class="instagram-item">120x117</div>
-                    <div class="instagram-item">120x116</div>
-                    <div class="instagram-item">120x116</div>
-                    <div class="instagram-item">120x116</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    
-
     <!-- Scroll to Top Button -->
     <div class="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
         <i class="fas fa-chevron-up"></i>

@@ -117,52 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </div>
-
-    <!-- Footer Section -->
-    <div class="footer-section">
-        <div class="footer-container">
-            <!-- About -->
-            <div class="footer-box">
-                <h3>About</h3>
-                <div class="logo">
-                    <i class="fas fa-home"></i>
-                    <span>House Rent</span>
-                </div>
-                <p>We Provide Premium Word Press, Ghost and HTML template. Our Perm tritium Templates is, develop gapped
-                    in a way so that the clients find Support. Themes are developed in a way so that the clients find.
-                </p>
-                <a href="#" class="footer-btn">More</a>
-            </div>
-
-            <!-- Book Now -->
-            <div class="footer-box">
-                <h3>Book Now</h3>
-                <div class="logo">
-                    <i class="fas fa-home"></i>
-                    <span>House Rent</span>
-                </div>
-                <p>We Provide Premium Word Press, Ghost and HTML template. Our Perm tritium Templates is, develop gapped
-                    in a way so that the clients find Support. Themes are developed in a way so that the clients find.
-                </p>
-                <a href="#" class="footer-btn">Book Now</a>
-            </div>
-
-            <!-- Instagram -->
-            <div class="footer-box">
-                <h3>Instagram Image</h3>
-                <div class="instagram-grid">
-                    <div class="instagram-item">118x114</div>
-                    <div class="instagram-item">118x114</div>
-                    <div class="instagram-item">120x117</div>
-                    <div class="instagram-item">120x116</div>
-                    <div class="instagram-item">120x116</div>
-                    <div class="instagram-item">120x116</div>
-                </div>
-            </div>
-        </div>
-    </div>
 </body>
-
 </html>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

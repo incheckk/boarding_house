@@ -1,3 +1,11 @@
+<?php
+// Add DB connection for notifications (FIXED: Correct path)
+require_once __DIR__ . '/../../includes/db.php';
+
+// Fetch count of pending reservations
+$pendingReservations = $pdo->query("SELECT COUNT(*) AS count FROM reservation WHERE restat_id = 1")->fetch()['count'];
+?>
+
 <!-- admin-sidebar.php -->
 <aside class="sidebar">
     <ul class="sidebar-menu">
@@ -18,8 +26,11 @@
         </li>
 
         <li><a href="reservations.php" class="<?= basename($_SERVER['PHP_SELF']) == 'reservations.php' ? 'active' : '' ?>">
-            <i class="fas fa-calendar-check"></i> Reservations</a>
-        </li>
+            <i class="fas fa-calendar-check"></i> Reservations
+            <?php if ($pendingReservations > 0): ?>
+                <span style="background: red; color: white; border-radius: 50%; padding: 2px 7px; font-size: 10px; margin-left: 7px;"><?php echo $pendingReservations; ?></span>
+            <?php endif; ?>
+        </a></li>
 
         <li><a href="notifications.php" class="<?= basename($_SERVER['PHP_SELF']) == 'notifications.php' ? 'active' : '' ?>">
             <i class="fas fa-bell"></i> Notifications</a>

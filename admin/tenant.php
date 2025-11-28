@@ -2,63 +2,202 @@
 $pageTitle = "Tenant Management";
 require_once __DIR__ . '/php/admin-header.php';
 require_once __DIR__ . '/php/admin-sidebar.php';
+require_once __DIR__ . '/../includes/auth.php';  // Ensure admin is logged in
+require_once __DIR__ . '/../includes/db.php';
+
+$message = "";
+$editTenant = null;
+
+// Handle form submission (Add or Update)
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $first_name = trim($_POST['first_name']);
+    $last_name = trim($_POST['last_name']);
+    $middle_name = trim($_POST['middle_name']);
+    $number = trim($_POST['number']);
+    $emergency_number = trim($_POST['emergency_number']);
+    $email = trim($_POST['email']);
+    $room_id = intval($_POST['room_id']);
+    $tstat_id = intval($_POST['tstat_id']);
+
+    // Validation
+    $errors = [];
+    if (empty($first_name) || empty($last_name) || empty($number) || empty($email) || !$tstat_id) {
+        $errors[] = "Required fields are missing.";
+    }
+    if (!preg_match('/^[a-zA-Z\s]+$/', $first_name)) {
+        $errors[] = "First Name must contain only letters and spaces.";
+    }
+    if (!preg_match('/^[a-zA-Z\s]+$/', $last_name)) {
+        $errors[] = "Last Name must contain only letters and spaces.";
+    }
+    if (!empty($middle_name) && !preg_match('/^[a-zA-Z\s]+$/', $middle_name)) {
+        $errors[] = "Middle Name must contain only letters and spaces.";
+    }
+    if (!preg_match('/^09\d{9}$/', $number)) {
+        $errors[] = "Contact Number must be exactly 11 digits, start with 09, and contain only numbers.";
+    }
+    if (!preg_match('/^09\d{9}$/', $emergency_number)) {
+        $errors[] = "Emergency Contact Number must be exactly 11 digits, start with 09, and contain only numbers.";
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Invalid email format.";
+    }
+
+    if (empty($errors)) {
+        try {
+            if (isset($_POST['update_tenant_id'])) {
+                // Update existing tenant
+                $tenant_id = intval($_POST['update_tenant_id']);
+                $stmt = $pdo->prepare("UPDATE tenant SET first_name = ?, last_name = ?, middle_name = ?, number = ?, emergency_number = ?, email = ?, tstat_id = ? WHERE tenant_id = ?");
+                $stmt->execute([$first_name, $last_name, $middle_name, $number, $emergency_number, $email, $tstat_id, $tenant_id]);
+                $message = "Tenant updated successfully!";
+            } else {
+                // Add new tenant
+                $stmt = $pdo->prepare("INSERT INTO tenant (first_name, last_name, middle_name, number, emergency_number, email, tstat_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$first_name, $last_name, $middle_name, $number, $emergency_number, $email, $tstat_id]);
+                $tenant_id = $pdo->lastInsertId();
+
+                // If status is Active, assign to room
+                if ($tstat_id == 2 && $room_id) {
+                    $stmt = $pdo->prepare("INSERT INTO roomtenant (tenant_id, room_id, check_in_date, role_in_room) VALUES (?, ?, CURRENT_DATE, 'Member')");
+                    $stmt->execute([$tenant_id, $room_id]);
+                    $stmt = $pdo->prepare("UPDATE room SET rstat_id = 2 WHERE room_id = ?");
+                    $stmt->execute([$room_id]);
+                }
+
+                $message = "Tenant added successfully!";
+                preventResubmission();  // Replaces header() call
+            }
+        } catch (PDOException $e) {
+            $message = "Database error: " . $e->getMessage();
+        }
+    } else {
+        $message = implode('<br>', $errors);  // Show all errors
+    }
+}
+
+// Handle delete (UPDATED: Mark as churned instead of deleting)
+if (isset($_GET['delete_tenant'])) {
+    $tenant_id = intval($_GET['delete_tenant']);
+    try {
+        // Set check_out_date to today in roomtenant (mark as churned)
+        $stmt = $pdo->prepare("UPDATE roomtenant SET check_out_date = CURDATE() WHERE tenant_id = ? AND check_out_date IS NULL");
+        $stmt->execute([$tenant_id]);
+
+        // Free the room
+        $stmt = $pdo->prepare("UPDATE room SET rstat_id = 1 WHERE room_id = (SELECT room_id FROM roomtenant WHERE tenant_id = ? AND check_out_date = CURDATE() LIMIT 1)");
+        $stmt->execute([$tenant_id]);
+
+        $message = "Tenant marked as churned (check-out date set).";
+    } catch (PDOException $e) {
+        $message = "Error marking tenant as churned: " . $e->getMessage();
+    }
+}
+
+// Handle edit (populate form)
+if (isset($_GET['edit_tenant'])) {
+    $tenant_id = intval($_GET['edit_tenant']);
+    $stmt = $pdo->prepare("SELECT * FROM tenant WHERE tenant_id = ?");
+    $stmt->execute([$tenant_id]);
+    $editTenant = $stmt->fetch();
+}
+
+// Fetch tenant statuses
+$tenantStatuses = $pdo->query("SELECT tstat_id, tstat_desc FROM tenant_status")->fetchAll();
+
+// Fetch available rooms
+$rooms = $pdo->query("SELECT room_id, room_number FROM room ORDER BY room_number")->fetchAll();
+
+// Fetch tenants for table
+$tenants = $pdo->query("
+    SELECT t.tenant_id, t.first_name, t.last_name, t.middle_name, t.number, t.emergency_number, t.email, ts.tstat_desc AS status,
+           COALESCE(r.room_number, '-') AS room_assignment
+    FROM tenant t
+    LEFT JOIN tenant_status ts ON t.tstat_id = ts.tstat_id
+    LEFT JOIN roomtenant rt ON t.tenant_id = rt.tenant_id AND rt.check_out_date IS NULL
+    LEFT JOIN room r ON rt.room_id = r.room_id
+    ORDER BY t.last_name
+")->fetchAll();
 ?>
 
 <main class="main-content">
-
     <!-- Page Header -->
     <div class="page-header">
         <h1>Tenant Management</h1>
         <p>Add, update, and manage tenant profiles along with room assignments and statuses.</p>
     </div>
 
+    <!-- Success/Error Message -->
+    <?php if ($message): ?>
+        <div style="background: #d4edda; color: #155724; padding: 10px; margin-bottom: 20px; border: 1px solid #c3e6cb;">
+            <?php echo htmlspecialchars($message); ?>
+        </div>
+    <?php endif; ?>
+
     <!-- Add New Tenant Form Section -->
     <div class="dashboard-section">
         <div class="section-header">
             <h2>Add New Tenant</h2>
-            <a href="#" class="view-all" onclick="toggleForm()">Cancel <i class="fas fa-times"></i></a>
         </div>
 
-        <form id="addTenantForm" class="tenant-form" style="display: block;">
+        <form id="addTenantForm" method="POST" class="tenant-form" style="display: block;">
             <div class="form-grid">
                 <div class="form-group">
-                    <label for="tenantName">Full Name</label>
-                    <input type="text" id="tenantName" name="tenantName" required>
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" value="<?php echo htmlspecialchars($editTenant['first_name'] ?? ''); ?>" required>
                 </div>
                 <div class="form-group">
-                    <label for="tenantContact">Contact Info</label>
-                    <input type="tel" id="tenantContact" name="tenantContact" required>
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" value="<?php echo htmlspecialchars($editTenant['last_name'] ?? ''); ?>" required>
                 </div>
                 <div class="form-group">
-                    <label for="tenantId">ID Number</label>
-                    <input type="text" id="tenantId" name="tenantId" required>
+                    <label for="middle_name">Middle Name (Optional)</label>
+                    <input type="text" id="middle_name" name="middle_name" value="<?php echo htmlspecialchars($editTenant['middle_name'] ?? ''); ?>">
                 </div>
                 <div class="form-group">
-                    <label for="emergencyContact">Emergency Contact</label>
-                    <input type="text" id="emergencyContact" name="emergencyContact" required>
+                    <label for="number">Contact Number</label>
+                    <input type="text" id="number" name="number" value="<?php echo htmlspecialchars($editTenant['number'] ?? ''); ?>" required>
                 </div>
                 <div class="form-group">
-                    <label for="roomAssignment">Room Assignment</label>
-                    <select id="roomAssignment" name="roomAssignment" required>
+                    <label for="emergency_number">Emergency Contact Number</label>
+                    <input type="text" id="emergency_number" name="emergency_number" value="<?php echo htmlspecialchars($editTenant['emergency_number'] ?? ''); ?>" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($editTenant['email'] ?? ''); ?>" required>
+                </div>
+                <div class="form-group">
+                    <label for="room_id">Select Room</label>
+                    <select id="room_id" name="room_id">
                         <option value="">Select Room</option>
-                        <option value="Room 101">Room 101</option>
-                        <option value="Room 102">Room 102</option>
-                        <option value="Room 103">Room 103</option>
+                        <?php foreach ($rooms as $room): ?>
+                            <option value="<?php echo $room['room_id']; ?>" <?php echo ($editTenant && $editTenant['room_id'] == $room['room_id']) ? 'selected' : ''; ?>>
+                                Room <?php echo htmlspecialchars($room['room_number']); ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="tenantStatus">Status</label>
-                    <select id="tenantStatus" name="tenantStatus" required>
-                        <option value="occupied">Occupied</option>
-                        <option value="vacant">Vacant</option>
-                        <option value="reserved">Reserved</option>
+                    <label for="tstat_id">Status</label>
+                    <select id="tstat_id" name="tstat_id" required>
+                        <?php foreach ($tenantStatuses as $status): ?>
+                            <option value="<?php echo $status['tstat_id']; ?>" <?php echo ($editTenant && $editTenant['tstat_id'] == $status['tstat_id']) ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($status['tstat_desc']); ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn-action primary">Add Tenant</button>
-                <button type="reset" class="btn-action">Reset</button>
+                <?php if ($editTenant): ?>
+                    <input type="hidden" name="update_tenant_id" value="<?php echo $editTenant['tenant_id']; ?>">
+                    <button type="submit" class="btn-action primary">Update Tenant</button>
+                    <a href="tenant.php" class="btn-action">Cancel</a>
+                <?php else: ?>
+                    <button type="submit" class="btn-action primary">Add Tenant</button>
+                    <button type="reset" class="btn-action">Reset</button>
+                <?php endif; ?>
             </div>
         </form>
     </div>
@@ -67,7 +206,6 @@ require_once __DIR__ . '/php/admin-sidebar.php';
     <div class="dashboard-section">
         <div class="section-header">
             <h2>Tenant List</h2>
-            <a href="#" class="view-all" onclick="toggleForm()">Add New <i class="fas fa-plus"></i></a>
         </div>
 
         <table class="data-table">
@@ -75,54 +213,29 @@ require_once __DIR__ . '/php/admin-sidebar.php';
                 <tr>
                     <th>Name</th>
                     <th>Contact Info</th>
-                    <th>ID</th>
-                    <th>Emergency Contact</th>
+                    <th>Email</th>
                     <th>Room Assignment</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>John Doe</td>
-                    <td>123-456-7890</td>
-                    <td>ID123</td>
-                    <td>Jane Doe - 098-765-4321</td>
-                    <td>Room 101</td>
-                    <td><span class="status-badge occupied">Occupied</span></td>
-                    <td>
-                        <button class="btn-action" onclick="editTenant('ID123')" title="Edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn-action warning" onclick="removeTenant('ID123')" title="Remove"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Jane Smith</td>
-                    <td>987-654-3210</td>
-                    <td>ID456</td>
-                    <td>Bob Smith - 012-345-6789</td>
-                    <td>Room 102</td>
-                    <td><span class="status-badge reserved">Reserved</span></td>
-                    <td>
-                        <button class="btn-action" onclick="editTenant('ID456')" title="Edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn-action warning" onclick="removeTenant('ID456')" title="Remove"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Mike Johnson</td>
-                    <td>555-123-4567</td>
-                    <td>ID789</td>
-                    <td>Sarah Johnson - 777-888-9999</td>
-                    <td>Room 103</td>
-                    <td><span class="status-badge vacant">Vacant</span></td>
-                    <td>
-                        <button class="btn-action" onclick="editTenant('ID789')" title="Edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn-action warning" onclick="removeTenant('ID789')" title="Remove"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
+                <?php foreach ($tenants as $tenant): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($tenant['first_name'] . ' ' . $tenant['last_name']); ?></td>
+                        <td><?php echo htmlspecialchars($tenant['number']); ?></td>
+                        <td><?php echo htmlspecialchars($tenant['email']); ?></td>
+                        <td><?php echo htmlspecialchars($tenant['room_assignment']); ?></td>
+                        <td><span class="status-badge <?php echo strtolower($tenant['status']); ?>"><?php echo htmlspecialchars($tenant['status']); ?></span></td>
+                        <td>
+                            <a href="?edit_tenant=<?php echo $tenant['tenant_id']; ?>" class="btn-action" title="Edit"><i class="fas fa-edit"></i></a>
+                            <a href="?delete_tenant=<?php echo $tenant['tenant_id']; ?>" class="btn-action warning" onclick="return confirm('Remove this tenant?');" title="Remove"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
             </tbody>
         </table>
     </div>
-
 </main>
 
 <script>
@@ -130,20 +243,4 @@ require_once __DIR__ . '/php/admin-sidebar.php';
         const form = document.getElementById('addTenantForm');
         form.style.display = form.style.display === 'none' ? 'block' : 'none';
     }
-
-    function editTenant(id) {
-        alert('Edit tenant with ID: ' + id + '\n(Note: Implement edit modal/form here with JS)');
-    }
-
-    function removeTenant(id) {
-        if (confirm('Remove tenant with ID: ' + id + '?')) {
-            alert('Tenant removed: ' + id + '\n(Note: Implement removal logic here with JS/backend)');
-        }
-    }
-
-    document.getElementById('addTenantForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        alert('Tenant added successfully!\n(Note: Implement add logic here with JS/backend)');
-        this.reset();
-    });
 </script>
