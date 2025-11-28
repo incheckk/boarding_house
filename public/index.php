@@ -78,50 +78,6 @@ require_once __DIR__ . '/../includes/header.php';
     </div>
 </section>
 
-
-
-
-<!-- ====== Rooms Section ====== --> 
-<section class="rooms-area bg-gray-color">
-    <div class="container">
-        <h2>Our Rooms</h2>
-        <div class="rooms-grid">
-            <div class="room-card">
-                <img src="assets/images/apartment/Room.png" alt="Single Room">
-                <h3>Single Room</h3>
-                <p>₱200/day - 1 Bed</p>
-                <a href="room-single.php" class="button">View Details</a>
-            </div>
-            <div class="room-card">
-                <img src="assets/images/apartment/Room.png" alt="Double Room">
-                <h3>Double Room</h3>
-                <p>₱350/day - 2 Beds</p>
-                <a href="room-single.php" class="button">View Details</a>
-            </div>
-            <div class="room-card">
-                <img src="assets/images/apartment/Room.png" alt="Bunk Room">
-                <h3>Bunk Bed Room</h3>
-                <p>₱150/day per bed</p>
-                <a href="room-single.php" class="button">View Details</a>
-            </div>
-        </div>
-        <a href="rooms.php" class="button all-rooms-btn">All Rooms</a>
-    </div>
-</section>
-
-<!-- ====== Gallery Section ====== -->
-<section class="gallery-area">
-    <div class="container">
-        <h2>Gallery</h2>
-        <div class="gallery-grid">
-            <img src="assets/images/gallery/1.jpg" alt="Room Image">
-            <img src="assets/images/gallery/2.jpg" alt="Common Area">
-            <img src="assets/images/gallery/3.jpg" alt="Kitchen">
-            <img src="assets/images/gallery/4.jpg" alt="Bathroom">
-        </div>
-    </div>
-</section>
-
 <!-- ====== Fun Facts / Stats ====== -->
 <section class="fun-facts">
     <div class="container">
@@ -141,23 +97,6 @@ require_once __DIR__ . '/../includes/header.php';
             <div class="fact">
                 <h3>24/7</h3>
                 <p>Security</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ====== Testimonials Section ====== -->
-<section class="testimonial-area bg-gray-color">
-    <div class="container">
-        <h2>Testimonials</h2>
-        <div class="testimonials-slider">
-            <div class="testimonial">
-                <p>"Great environment and very affordable rooms. Highly recommended!"</p>
-                <h4>Juan Dela Cruz - Student</h4>
-            </div>
-            <div class="testimonial">
-                <p>"Friendly staff and clean rooms. Perfect for staying near work."</p>
-                <h4>Maria Santos - Professional</h4>
             </div>
         </div>
     </div>

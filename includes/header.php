@@ -1,6 +1,7 @@
 <?php
 $currentPage = basename($_SERVER['PHP_SELF']); // e.g., index.php
 if (!isset($pageTitle)) { $pageTitle = "CASA VILLAGRACIA"; }
+require_once __DIR__ . '/../includes/functions.php';  // Adjust path if needed
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -24,6 +24,60 @@ body {
     to { opacity: 1; }
 }
 
+.rooms-row {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+}
+
+.room-card-horizontal {
+    background: #fff;
+    border-radius: 10px;
+    padding: 18px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 6px solid #3498db;
+    box-shadow: 0 3px 7px rgba(0,0,0,0.1);
+}
+
+.room-info h4 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.room-info p {
+    margin: 2px 0;
+    color: #555;
+}
+
+/* STATUS LABELS */
+.room-status {
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.room-status.available {
+    background: #d4f8d4;
+    color: #1b8a1b;
+}
+
+.room-status.occupied {
+    background: #ffe1e1;
+    color: #d11a1a;
+}
+
+.room-status.reserved {
+    background: #fff4c2;
+    color: #b88a00;
+}
+
+
 /* Header Styles */
 .header-area {
     background-color: #1a1a1a; /* Slightly lighter for modernity */

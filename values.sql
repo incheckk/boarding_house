@@ -206,3 +206,24 @@ INSERT INTO room (room_number, room_size, room_rate, rstat_id)
 VALUES
 ('301', 'Bunk Bed', 2200.00, 1),
 ('302', 'Bunk Bed', 2200.00, 1);
+
+INSERT INTO tenant_status (tstat_desc) VALUES ('Prospective'), ('Active'), ('Inactive');
+INSERT INTO tenant_reservation_status (restat_desc) VALUES ('Pending'), ('Approved'), ('Rejected'), ('Cancelled');
+
+-- amenities (add basic amenities)
+INSERT INTO amenities (amen_name, amen_desc) VALUES 
+('Water', 'Water utility per person'),
+('Electricity', 'Electricity meter-based'),
+('WiFi', 'Internet access');
+
+-- roomamenities (link rooms to amenities; assuming all rooms have these)
+INSERT INTO roomamenities (room_id, amen_id) 
+SELECT r.room_id, a.amen_id 
+FROM room r 
+CROSS JOIN amenities a;
+
+-- payment_status (statuses for billing)
+INSERT INTO payment_status (pstat_desc) VALUES 
+('Pending'),
+('Paid'),
+('Overdue');
