@@ -27,38 +27,58 @@ for ($i = 11; $i >= 0; $i--) {
 $totalIncome = $pdo->query("SELECT COALESCE(SUM(received_amount), 0) AS sum FROM payment_history WHERE YEAR(received_date) = YEAR(CURDATE())")->fetch()['sum'];
 $overdueRent = $pdo->query("SELECT COALESCE(SUM(total_amount), 0) AS sum FROM billing WHERE pstat_id != 1 AND due_date < CURDATE()")->fetch()['sum'];
 
-// Fetch tenant churn and stay data (UPDATED: Churn rate for last quarter, avg stay for churned)
+// Fetch tenant churn and stay data (UPDATED: Only count actual churns, not room changes)
 $totalTenants = $pdo->query("SELECT COUNT(*) AS count FROM tenant")->fetch()['count'];
-$churnedTenantsLastQuarter = $pdo->query("SELECT COUNT(*) AS count FROM roomtenant WHERE check_out_date IS NOT NULL AND check_out_date >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)")->fetch()['count'];
+
+// Churned tenants: Tenants with no current room assignment (all roomtenant have check_out_date) and check_out_date in last quarter
+$churnedTenantsLastQuarter = $pdo->query("
+    SELECT COUNT(DISTINCT t.tenant_id) AS count
+    FROM tenant t
+    INNER JOIN roomtenant rt ON t.tenant_id = rt.tenant_id
+    WHERE rt.check_out_date IS NOT NULL 
+    AND rt.check_out_date >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
+    AND t.tenant_id NOT IN (
+        SELECT DISTINCT tenant_id FROM roomtenant WHERE check_out_date IS NULL
+    )
+")->fetch()['count'];
+
 $churnRate = $totalTenants > 0 ? round(($churnedTenantsLastQuarter / $totalTenants) * 100, 1) : 0;
+
+// Average stay for churned tenants: Total duration from first check-in to last check-out
 $avgStay = $pdo->query("
-    SELECT COALESCE(AVG(TIMESTAMPDIFF(MONTH, check_in_date, check_out_date)), 0) AS avg_stay
-    FROM roomtenant
-    WHERE check_out_date IS NOT NULL
+    SELECT COALESCE(AVG(total_stay), 0) AS avg_stay
+    FROM (
+        SELECT t.tenant_id, TIMESTAMPDIFF(MONTH, MIN(rt.check_in_date), MAX(rt.check_out_date)) AS total_stay
+        FROM tenant t
+        INNER JOIN roomtenant rt ON t.tenant_id = rt.tenant_id
+        WHERE rt.check_out_date IS NOT NULL
+        AND t.tenant_id NOT IN (
+            SELECT DISTINCT tenant_id FROM roomtenant WHERE check_out_date IS NULL
+        )
+        GROUP BY t.tenant_id
+    ) AS churned_stays
 ")->fetch()['avg_stay'];
 
-// Fetch tenant details for table (FIXED: Status is now tenant status, not occupancy)
+// Fetch tenant details for table (ONLY churned tenants, one row per tenant with total stay)
 $tenantDetails = $pdo->query("
-    SELECT CONCAT(t.first_name, ' ', t.last_name) AS tenant_name, rt.check_in_date, rt.check_out_date,
-           CASE 
-               WHEN rt.check_out_date IS NULL THEN 
-                   CONCAT(
-                       FLOOR(TIMESTAMPDIFF(DAY, rt.check_in_date, CURDATE()) / 365), ' year/s ',
-                       FLOOR((TIMESTAMPDIFF(DAY, rt.check_in_date, CURDATE()) % 365) / 30), ' month/s ',
-                       TIMESTAMPDIFF(DAY, rt.check_in_date, CURDATE()) % 30, ' day/s'
-                   )
-               ELSE 
-                   CONCAT(
-                       FLOOR(TIMESTAMPDIFF(DAY, rt.check_in_date, rt.check_out_date) / 365), ' year/s ',
-                       FLOOR((TIMESTAMPDIFF(DAY, rt.check_in_date, rt.check_out_date) % 365) / 30), ' month/s ',
-                       TIMESTAMPDIFF(DAY, rt.check_in_date, rt.check_out_date) % 30, ' day/s'
-                   )
-           END AS stay_duration,
+    SELECT CONCAT(t.first_name, ' ', t.last_name) AS tenant_name, 
+           MIN(rt.check_in_date) AS check_in_date, 
+           MAX(rt.check_out_date) AS check_out_date,
+           CONCAT(
+               FLOOR(TIMESTAMPDIFF(DAY, MIN(rt.check_in_date), MAX(rt.check_out_date)) / 365), ' year/s ',
+               FLOOR((TIMESTAMPDIFF(DAY, MIN(rt.check_in_date), MAX(rt.check_out_date)) % 365) / 30), ' month/s ',
+               TIMESTAMPDIFF(DAY, MIN(rt.check_in_date), MAX(rt.check_out_date)) % 30, ' day/s'
+           ) AS stay_duration,
            ts.tstat_desc AS status
     FROM tenant t
     LEFT JOIN tenant_status ts ON t.tstat_id = ts.tstat_id
-    LEFT JOIN roomtenant rt ON t.tenant_id = rt.tenant_id
-    ORDER BY rt.check_in_date DESC
+    INNER JOIN roomtenant rt ON t.tenant_id = rt.tenant_id
+    WHERE rt.check_out_date IS NOT NULL
+    AND t.tenant_id NOT IN (
+        SELECT DISTINCT tenant_id FROM roomtenant WHERE check_out_date IS NULL
+    )
+    GROUP BY t.tenant_id, ts.tstat_desc
+    ORDER BY MAX(rt.check_out_date) DESC
 ")->fetchAll();
 ?>
 
@@ -162,7 +182,7 @@ $tenantDetails = $pdo->query("
                     <tr>
                         <td><?php echo htmlspecialchars($tenant['tenant_name']); ?></td>
                         <td><?php echo htmlspecialchars($tenant['check_in_date']); ?></td>
-                        <td><?php echo htmlspecialchars($tenant['check_out_date'] ?? '-'); ?></td>
+                        <td><?php echo htmlspecialchars($tenant['check_out_date']); ?></td>
                         <td><?php echo htmlspecialchars($tenant['stay_duration']); ?></td>
                         <td><span class="status-badge <?php echo strtolower($tenant['status']); ?>"><?php echo htmlspecialchars($tenant['status']); ?></span></td>
                     </tr>

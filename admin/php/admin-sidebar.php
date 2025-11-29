@@ -32,16 +32,8 @@ $pendingReservations = $pdo->query("SELECT COUNT(*) AS count FROM reservation WH
             <?php endif; ?>
         </a></li>
 
-        <li><a href="notifications.php" class="<?= basename($_SERVER['PHP_SELF']) == 'notifications.php' ? 'active' : '' ?>">
-            <i class="fas fa-bell"></i> Notifications</a>
-        </li>
-
         <li><a href="reports.php" class="<?= basename($_SERVER['PHP_SELF']) == 'reports.php' ? 'active' : '' ?>">
             <i class="fas fa-chart-bar"></i> Reports & Analytics</a>
-        </li>
-
-        <li><a href="visitor_log.php" class="<?= basename($_SERVER['PHP_SELF']) == 'visitor_log.php' ? 'active' : '' ?>">
-            <i class="fas fa-user-shield"></i> Visitor Logs</a>
         </li>
     </ul>
 </aside>

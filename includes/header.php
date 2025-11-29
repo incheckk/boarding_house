@@ -10,10 +10,11 @@ require_once __DIR__ . '/../includes/functions.php';  // Adjust path if needed
     <title><?= htmlspecialchars($pageTitle) ?></title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/rooms.css">
-    <link rel="stylesheet" href="assets/css/room.css">
+    <link rel="stylesheet" href="assets\css\room.css">
     <link rel="stylesheet" href="assets/css/reservation.css">
-    <link rel="stylesheet" href="assets\css\about.css">
+    <link rel="stylesheet" href="assets/css/about.css">
     <link rel="stylesheet" href="assets\css\contact.css">
+    <link rel="stylesheet" href="assets/css/index.css">
     <script src="assets/js/rooms-filter.js"></script>
     <script src="assets/js/about-us.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,7 +37,6 @@ require_once __DIR__ . '/../includes/functions.php';  // Adjust path if needed
         <a href="index.php" class="<?= $currentPage == 'index.php' ? 'active' : '' ?>">Home</a>
         <a href="rooms.php" class="<?= $currentPage == 'rooms.php' ? 'active' : '' ?>">Rooms</a>
         <a href="about.php" class="<?= $currentPage == 'about.php' ? 'active' : '' ?>">About</a>
-        <a href="blog.php" class="<?= $currentPage == 'blog.php' ? 'active' : '' ?>">Blog</a>
         <a href="contact.php" class="<?= $currentPage == 'contact.php' ? 'active' : '' ?>">Contact</a>
     </nav>
 </header>

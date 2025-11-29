@@ -48,30 +48,80 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST['update_tenant_id'])) {
                 // Update existing tenant
                 $tenant_id = intval($_POST['update_tenant_id']);
-                $stmt = $pdo->prepare("UPDATE tenant SET first_name = ?, last_name = ?, middle_name = ?, number = ?, emergency_number = ?, email = ?, tstat_id = ? WHERE tenant_id = ?");
-                $stmt->execute([$first_name, $last_name, $middle_name, $number, $emergency_number, $email, $tstat_id, $tenant_id]);
-                $message = "Tenant updated successfully!";
+                
+                // Get current room assignment
+                $stmt = $pdo->prepare("SELECT rt.room_id FROM roomtenant rt WHERE rt.tenant_id = ? AND rt.check_out_date IS NULL");
+                $stmt->execute([$tenant_id]);
+                $currentRoom = $stmt->fetchColumn();
+                
+                // Check if room is changing and if new room is available
+                if ($tstat_id == 2 && $room_id && $room_id != $currentRoom) {
+                    // Check if new room is available
+                    $stmt = $pdo->prepare("SELECT rstat_id FROM room WHERE room_id = ?");
+                    $stmt->execute([$room_id]);
+                    $newRoomStatus = $stmt->fetchColumn();
+                    if ($newRoomStatus != 1) {
+                        $errors[] = "Cannot assign to an occupied room.";
+                    } else {
+                        // Set check_out for current room if exists
+                        if ($currentRoom) {
+                            $stmt = $pdo->prepare("UPDATE roomtenant SET check_out_date = CURDATE() WHERE tenant_id = ? AND check_out_date IS NULL");
+                            $stmt->execute([$tenant_id]);
+                            // Free current room
+                            $stmt = $pdo->prepare("UPDATE room SET rstat_id = 1 WHERE room_id = ?");
+                            $stmt->execute([$currentRoom]);
+                        }
+                        // Assign new room
+                        $stmt = $pdo->prepare("INSERT INTO roomtenant (tenant_id, room_id, check_in_date, role_in_room) VALUES (?, ?, CURRENT_DATE, 'Member')");
+                        $stmt->execute([$tenant_id, $room_id]);
+                        // Occupy new room
+                        $stmt = $pdo->prepare("UPDATE room SET rstat_id = 2 WHERE room_id = ?");
+                        $stmt->execute([$room_id]);
+                    }
+                } elseif ($tstat_id != 2 && $currentRoom) {
+                    // If status changed to non-active, check out from room
+                    $stmt = $pdo->prepare("UPDATE roomtenant SET check_out_date = CURDATE() WHERE tenant_id = ? AND check_out_date IS NULL");
+                    $stmt->execute([$tenant_id]);
+                    $stmt = $pdo->prepare("UPDATE room SET rstat_id = 1 WHERE room_id = ?");
+                    $stmt->execute([$currentRoom]);
+                }
+                
+                if (empty($errors)) {
+                    $stmt = $pdo->prepare("UPDATE tenant SET first_name = ?, last_name = ?, middle_name = ?, number = ?, emergency_number = ?, email = ?, tstat_id = ? WHERE tenant_id = ?");
+                    $stmt->execute([$first_name, $last_name, $middle_name, $number, $emergency_number, $email, $tstat_id, $tenant_id]);
+                    $message = "Tenant updated successfully!";
+                }
             } else {
                 // Add new tenant
                 $stmt = $pdo->prepare("INSERT INTO tenant (first_name, last_name, middle_name, number, emergency_number, email, tstat_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
                 $stmt->execute([$first_name, $last_name, $middle_name, $number, $emergency_number, $email, $tstat_id]);
                 $tenant_id = $pdo->lastInsertId();
 
-                // If status is Active, assign to room
+                // If status is Active, assign to room (check if available)
                 if ($tstat_id == 2 && $room_id) {
-                    $stmt = $pdo->prepare("INSERT INTO roomtenant (tenant_id, room_id, check_in_date, role_in_room) VALUES (?, ?, CURRENT_DATE, 'Member')");
-                    $stmt->execute([$tenant_id, $room_id]);
-                    $stmt = $pdo->prepare("UPDATE room SET rstat_id = 2 WHERE room_id = ?");
+                    $stmt = $pdo->prepare("SELECT rstat_id FROM room WHERE room_id = ?");
                     $stmt->execute([$room_id]);
+                    $roomStatus = $stmt->fetchColumn();
+                    if ($roomStatus != 1) {
+                        $errors[] = "Cannot assign to an occupied room.";
+                    } else {
+                        $stmt = $pdo->prepare("INSERT INTO roomtenant (tenant_id, room_id, check_in_date, role_in_room) VALUES (?, ?, CURRENT_DATE, 'Member')");
+                        $stmt->execute([$tenant_id, $room_id]);
+                        $stmt = $pdo->prepare("UPDATE room SET rstat_id = 2 WHERE room_id = ?");
+                        $stmt->execute([$room_id]);
+                    }
                 }
 
-                $message = "Tenant added successfully!";
-                preventResubmission();  // Replaces header() call
+                if (empty($errors)) {
+                    $message = "Tenant added successfully!";
+                    preventResubmission();  // Replaces header() call
+                }
             }
         } catch (PDOException $e) {
             $message = "Database error: " . $e->getMessage();
         }
-    } else {
+    }
+    if (!empty($errors)) {
         $message = implode('<br>', $errors);  // Show all errors
     }
 }
@@ -97,7 +147,7 @@ if (isset($_GET['delete_tenant'])) {
 // Handle edit (populate form)
 if (isset($_GET['edit_tenant'])) {
     $tenant_id = intval($_GET['edit_tenant']);
-    $stmt = $pdo->prepare("SELECT * FROM tenant WHERE tenant_id = ?");
+    $stmt = $pdo->prepare("SELECT t.*, rt.room_id FROM tenant t LEFT JOIN roomtenant rt ON t.tenant_id = rt.tenant_id AND rt.check_out_date IS NULL WHERE t.tenant_id = ?");
     $stmt->execute([$tenant_id]);
     $editTenant = $stmt->fetch();
 }
@@ -105,8 +155,8 @@ if (isset($_GET['edit_tenant'])) {
 // Fetch tenant statuses
 $tenantStatuses = $pdo->query("SELECT tstat_id, tstat_desc FROM tenant_status")->fetchAll();
 
-// Fetch available rooms
-$rooms = $pdo->query("SELECT room_id, room_number FROM room ORDER BY room_number")->fetchAll();
+// Fetch rooms (all for now, filter in loop)
+$rooms = $pdo->query("SELECT room_id, room_number, rstat_id FROM room ORDER BY room_number")->fetchAll();
 
 // Fetch tenants for table
 $tenants = $pdo->query("
@@ -137,7 +187,7 @@ $tenants = $pdo->query("
     <!-- Add New Tenant Form Section -->
     <div class="dashboard-section">
         <div class="section-header">
-            <h2>Add New Tenant</h2>
+            <h2><?php echo $editTenant ? 'Edit Tenant' : 'Add New Tenant'; ?></h2>
         </div>
 
         <form id="addTenantForm" method="POST" class="tenant-form" style="display: block;">
@@ -171,9 +221,20 @@ $tenants = $pdo->query("
                     <select id="room_id" name="room_id">
                         <option value="">Select Room</option>
                         <?php foreach ($rooms as $room): ?>
-                            <option value="<?php echo $room['room_id']; ?>" <?php echo ($editTenant && $editTenant['room_id'] == $room['room_id']) ? 'selected' : ''; ?>>
-                                Room <?php echo htmlspecialchars($room['room_number']); ?>
-                            </option>
+                            <?php 
+                            $showRoom = false;
+                            if (!$editTenant) {
+                                // For add: only available
+                                $showRoom = ($room['rstat_id'] == 1);
+                            } else {
+                                // For edit: available or current
+                                $showRoom = ($room['rstat_id'] == 1 || $room['room_id'] == $editTenant['room_id']);
+                            }
+                            if ($showRoom): ?>
+                                <option value="<?php echo $room['room_id']; ?>" <?php echo ($editTenant && $editTenant['room_id'] == $room['room_id']) ? 'selected' : ''; ?>>
+                                    Room <?php echo htmlspecialchars($room['room_number']); ?> <?php echo ($room['rstat_id'] != 1) ? '(Occupied)' : ''; ?>
+                                </option>
+                            <?php endif; ?>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -181,6 +242,7 @@ $tenants = $pdo->query("
                     <label for="tstat_id">Status</label>
                     <select id="tstat_id" name="tstat_id" required>
                         <?php foreach ($tenantStatuses as $status): ?>
+                            <?php if (!$editTenant && $status['tstat_desc'] == 'Inactive') continue; // Exclude Inactive for add ?>
                             <option value="<?php echo $status['tstat_id']; ?>" <?php echo ($editTenant && $editTenant['tstat_id'] == $status['tstat_id']) ? 'selected' : ''; ?>>
                                 <?php echo htmlspecialchars($status['tstat_desc']); ?>
                             </option>
