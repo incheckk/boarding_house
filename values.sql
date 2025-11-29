@@ -178,7 +178,7 @@ CREATE INDEX idx_tenant_status ON tenant(tstat_id);
 
 
 INSERT INTO room_status (rstat_id, rstat_desc)
-VALUES 
+VALUES
 (1, 'Available'),
 (2, 'Occupied'),
 (3, 'Reserved');
