@@ -172,6 +172,23 @@ CREATE TABLE blog (
     image VARCHAR(255) -- optional, store image filename/path
 );
 
+-- Churned tenants table for historical tracking
+CREATE TABLE churned_tenants (
+    churn_id INT AUTO_INCREMENT PRIMARY KEY,
+    tenant_id INT,  -- Original tenant_id for reference
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    middle_name VARCHAR(50),
+    number VARCHAR(20),
+    emergency_number VARCHAR(20),
+    email VARCHAR(100),
+    churn_date DATE DEFAULT CURDATE(),  -- Date of churn
+    churn_reason VARCHAR(255) DEFAULT 'Manual removal',  -- Optional reason
+    check_in_date DATE,  -- First check-in date from roomtenant
+    check_out_date DATE,  -- Last check-out date from roomtenant
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- small indexes for performance
 CREATE INDEX idx_room_status ON room(rstat_id);
 CREATE INDEX idx_tenant_status ON tenant(tstat_id);
@@ -227,3 +244,5 @@ INSERT INTO payment_status (pstat_desc) VALUES
 ('Pending'),
 ('Paid'),
 ('Overdue');
+
+UPDATE billing SET total_amount = rent_amount + utilities_amount + other_charges WHERE total_amount IS NULL OR total_amount = 0;

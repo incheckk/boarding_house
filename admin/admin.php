@@ -11,6 +11,19 @@ $activeTenants = $pdo->query("SELECT COUNT(*) AS count FROM tenant WHERE tstat_i
 $overduePayments = $pdo->query("SELECT COUNT(*) AS count FROM billing WHERE pstat_id != 1 AND due_date < CURDATE()")->fetch()['count'];
 $monthlyRevenue = $pdo->query("SELECT COALESCE(SUM(received_amount), 0) AS sum FROM payment_history WHERE DATE_FORMAT(received_date, '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m')")->fetch()['sum'];
 
+// ADDED: Fetch tenant churn and stay data
+$totalTenants = $pdo->query("SELECT COUNT(*) AS count FROM tenant")->fetch()['count'];
+$churnedTenantsLastQuarter = $pdo->query("
+    SELECT COUNT(*) AS count
+    FROM churned_tenants
+    WHERE churn_date >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
+")->fetch()['count'];
+$churnRate = $totalTenants > 0 ? round(($churnedTenantsLastQuarter / $totalTenants) * 100, 1) : 0;
+$avgStay = $pdo->query("
+    SELECT COALESCE(AVG(TIMESTAMPDIFF(MONTH, check_in_date, check_out_date)), 0) AS avg_stay
+    FROM churned_tenants
+")->fetch()['avg_stay'];
+
 // Fetch payment status overview (latest 5)
 $paymentOverview = $pdo->query("
     SELECT r.room_number, CONCAT(t.first_name, ' ', t.last_name) AS tenant_name, b.due_date, b.total_amount,
@@ -44,7 +57,7 @@ $pendingReservations = $pdo->query("SELECT COUNT(*) AS count FROM reservation WH
         <p>Welcome back! Here's what's happening with your boarding house today.</p>
     </div>
 
-    <!-- Statistics Cards -->
+    <!-- Statistics Cards (UPDATED: Added Churn Rate and Average Stay with Icons) -->
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-card-icon blue">
@@ -80,6 +93,26 @@ $pendingReservations = $pdo->query("SELECT COUNT(*) AS count FROM reservation WH
             <h3>Monthly Revenue</h3>
             <div class="number">₱<?php echo number_format($monthlyRevenue, 2); ?></div>
             <div class="trend"><i class="fas fa-check"></i>Collected this month</div>
+        </div>
+
+        <!-- ADDED: Tenant Churn Rate Card with Icon -->
+        <div class="stat-card">
+            <div class="stat-card-icon orange">
+                <i class="fas fa-user-times"></i>
+            </div>
+            <h3>Tenant Churn Rate</h3>
+            <div class="number"><?php echo $churnRate; ?>%</div>
+            <div class="trend warning"><i class="fas fa-chart-line"></i>Based on last quarter</div>
+        </div>
+
+        <!-- ADDED: Average Stay Duration Card with Icon -->
+        <div class="stat-card">
+            <div class="stat-card-icon purple">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <h3>Average Stay Duration</h3>
+            <div class="number"><?php echo round($avgStay, 1); ?> months</div>
+            <div class="trend"><i class="fas fa-clock"></i>For churned tenants</div>
         </div>
     </div>
 

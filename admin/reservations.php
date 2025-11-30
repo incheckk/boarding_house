@@ -65,19 +65,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $tenant_id = $res['tenant_id'];
                 $room_id = $res['room_id'];
 
-                // Update reservation status
+                // Update reservation status to Rejected
                 $stmt = $pdo->prepare("UPDATE reservation SET restat_id = 3 WHERE reservation_id = ?");
                 $stmt->execute([$reservation_id]);
 
-                // Delete tenant
-                $stmt = $pdo->prepare("DELETE FROM tenant WHERE tenant_id = ?");
+                // Check if tenant exists before deleting
+                $stmt = $pdo->prepare("SELECT COUNT(*) FROM tenant WHERE tenant_id = ?");
                 $stmt->execute([$tenant_id]);
+                if ($stmt->fetchColumn() > 0) {
+                    // Delete tenant (cascades to delete reservation if not already updated)
+                    $stmt = $pdo->prepare("DELETE FROM tenant WHERE tenant_id = ?");
+                    $stmt->execute([$tenant_id]);
+                }
 
-                // Free room
-                $stmt = $pdo->prepare("UPDATE room SET rstat_id = 1 WHERE room_id = ?");
+                // Free room (set to Available if not occupied)
+                $stmt = $pdo->prepare("UPDATE room SET rstat_id = 1 WHERE room_id = ? AND rstat_id != 2");
                 $stmt->execute([$room_id]);
 
                 $message = "Reservation rejected and tenant removed!";
+            } else {
+                $message = "Reservation not found.";
             }
         }
     } catch (PDOException $e) {
@@ -239,25 +246,6 @@ if (isset($_GET['view_tenant'])) {
     <section class="dashboard-section">
         <div class="section-header">
             <h2>Online Reservation System</h2>
-        </div>
-
-        <!-- Available Rooms Display (Horizontal) -->
-        <div class="available-rooms">
-            <h3>Available Rooms</h3>
-            <div class="rooms-horizontal" style="display: flex; overflow-x: auto; gap: 20px; padding: 10px;">
-                <?php if (!empty($availableRooms)): ?>
-                    <?php foreach ($availableRooms as $room): ?>
-                        <div class="room-card" style="min-width: 250px; border: 1px solid #ddd; padding: 10px; text-align: center;">
-                            <img src="https://via.placeholder.com/300x200" alt="Room Image" style="width: 100%; height: auto;">
-                            <h4><?php echo htmlspecialchars($room['room_size']); ?> - Room <?php echo htmlspecialchars($room['room_number']); ?></h4>
-                            <p>₱<?php echo htmlspecialchars($room['room_rate']); ?>/month</p>
-                            <p><strong>Status:</strong> <?php echo htmlspecialchars($room['status']); ?></p>
-                        </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <p>No rooms available.</p>
-                <?php endif; ?>
-            </div>
         </div>
 
         <!-- Reservation Form (Admin Manual) - Updated to Match User-Side Form with Previous Grid Design -->
