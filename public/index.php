@@ -6,406 +6,674 @@ require_once __DIR__ . '/../includes/header.php';
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <style>
-    /* Global Styles for Layout */
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
+/* ================================================================= */
+/* MERGED & CONSOLIDATED CSS STYLES */
+/* (Form button placement and About Us gold glow are finalized) */
+/* ================================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: linear-gradient(
+        #cfa049 80%, 
+        #a8763a 100% 
+    );
+    --secondary-color: #f60a0a;
+    --accent-color: #080820;
+    --dark-text: #2d2d2d;
+    --light-text: #666;
+    --white: #ffffff;
+    --off-white: #f8f9fa;
+    --border-color: #e0e0e0;
+    --shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 5px 25px rgba(0, 0, 0, 0.15);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--dark-text);
+    background: linear-gradient(
+        180deg,
+        #fdfbf7 0%,
+        #f5f0e8 50%,
+        #fdfbf7 100%
+    );
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle, rgba(212, 175, 55, 0.08) 1px, transparent 1px),
+        radial-gradient(circle, rgba(218, 165, 32, 0.06) 1.5px, transparent 1.5px);
+    background-size: 60px 60px, 100px 100px;
+    background-position: 0 0, 30px 30px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ====== Hero Section ====== */
+.hero {
+    background: linear-gradient(
+        135deg,
+        #d4af37 0%,
+        #f4e5c0 25%,
+        #c9a961 50%,
+        #f4e5c0 75%,
+        #d4af37 100%
+    );
+    min-height: 645px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--white);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle, rgba(255, 255, 255, 0.3) 2px, transparent 2px),
+        radial-gradient(circle, rgba(255, 215, 0, 0.4) 1.5px, transparent 1.5px),
+        radial-gradient(circle, rgba(139, 69, 19, 0.2) 1px, transparent 1px);
+    background-size: 80px 80px, 120px 120px, 50px 50px;
+    background-position: 0 0, 40px 40px, 20px 20px;
+    animation: shimmer 20s ease-in-out infinite;
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 70% 30%, rgba(255, 215, 0, 0.15), transparent 50%),
+                radial-gradient(circle at 30% 70%, rgba(218, 165, 32, 0.15), transparent 50%);
+}
+
+@keyframes shimmer {
+    0%, 100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    50% {
+        opacity: 0.7;
+        transform: translateY(-10px);
+    }
+}
+
+.hero-text {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+    padding: 20px;
+    animation: fadeInUp 1s ease-out;
+}
+
+.hero-text h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-text p {
+    font-size: 1.4rem;
+    margin-bottom: 30px;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.hero-btn {
+    display: inline-block;
+    padding: 15px 40px;
+    background: var(--secondary-color);
+    color: var(--white);
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 120, 53, 0.449);
+}
+
+.hero-btn:hover {
+    background: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 165, 0, 0.5);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ====== Availability Section ====== */
+.availability-area {
+    padding: 80px 0;
+    background: white;
+}
+
+.bg-white-smoke {
+    background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.availability-area h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    background: var(--primary-color);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.availability-area h3 {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--light-text);
+    margin-bottom: 40px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.availability-form {
+    display: grid;
+    /* Updated to allow for 4 columns */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+    background: var(--white);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+}
+
+.availability-form label {
+    display: flex;
+    flex-direction: column;
+    font-weight: 600;
+    color: var(--dark-text);
+    font-size: 0.95rem;
+    text-align: left;
+    flex-grow: 1;
+}
+
+.availability-form select,
+.availability-form input {
+    margin-top: 8px;
+    padding: 12px 15px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: var(--off-white);
+}
+
+.availability-form select:focus,
+.availability-form input:focus {
+    outline: none;
+    border-color: #d4af37;
+    background: var(--white);
+}
+
+/* New container class for button alignment */
+.submit-button-container {
+    display: flex; 
+    flex-direction: column;
+    /* Pushes the button down to align with the bottom of the input fields */
+    justify-content: flex-end; 
+}
+
+/* Targeted styling for the button */
+.availability-submit-btn {
+    width: 100%;
+    /* Adjusted padding to match input field height better */
+    padding: 12px 15px; 
+    background: linear-gradient(135deg, #d4af37 0%, #c9a961 100%);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: auto; 
+    margin-top: 0; 
+}
+
+.availability-submit-btn:hover {
+    background: #d8c29a;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+    color: var(--dark-text);
+}
+
+
+/* ====== About Us Section ====== */
+.aboutus-area {
+    padding: 80px 0;
+    background: whitesmoke;
+}
+
+.aboutus-area h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    background: var(--primary-color);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 50px;
+    font-weight: 700;
+}
+
+.aboutus-flex {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.aboutus-tabs-area {
+    background: var(--off-white);
+    border-radius: 12px;
+    padding: 20px;
+    /* Added Gold Glow and Border */
+    box-shadow: var(--shadow), 0 0 15px rgba(212, 175, 55, 0.4); 
+    border: 1px solid rgba(212, 175, 55, 0.6); 
+    transition: all 0.3s ease;
+}
+
+.aboutus-tabs-area:hover {
+    box-shadow: var(--shadow-hover), 0 0 25px rgba(212, 175, 55, 0.7);
+    border-color: rgba(212, 175, 55, 0.8);
+}
+
+
+.aboutus-tabs {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.aboutus-tabs .tab {
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    color: var(--dark-text);
+}
+
+.aboutus-tabs .tab:hover {
+    background: linear-gradient(135deg, #fdfbf7 0%, #f5f0e8 100%);
+    color: var(--dark-text);
+    transform: translateX(5px);
+}
+
+.aboutus-tabs .tab.active {
+    background: linear-gradient(135deg, #d4af37 0%, #c9a961 100%);
+    color: var(--white);
+    box-shadow: 0px 4px 15px rgba(212, 175, 55, 0.3);
+    border-radius: 8px;
+}
+
+.aboutus-description {
+    background: var(--off-white);
+    border-radius: 12px;
+    padding: 60px;
+    /* Added Gold Glow and Border */
+    box-shadow: var(--shadow), 0 0 15px rgba(212, 175, 55, 0.4); 
+    border: 1px solid rgba(212, 175, 55, 0.6); 
+    min-height: 350px;
+    transition: all 0.3s ease;
+}
+
+.aboutus-description:hover {
+    box-shadow: var(--shadow-hover), 0 0 25px rgba(212, 175, 55, 0.7);
+    border-color: rgba(212, 175, 55, 0.8);
+}
+
+.aboutus-description .content {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+.aboutus-description .content.active {
+    display: block;
+}
+
+.aboutus-description p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--light-text);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
     }
 
-    /* Hero Section */
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ====== Fun Facts Section ====== */
+.fun-facts {
+    padding: 80px 0;
+    background: linear-gradient(
+        135deg,
+        #c9a961 0%,
+        #f4e5c0 25%,
+        #d4af37 50%,
+        #f4e5c0 75%,
+        #c9a961 100%
+    );
+    color: var(--white);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.fun-facts::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle, rgba(255, 255, 255, 0.4) 2px, transparent 2px),
+        radial-gradient(circle, rgba(139, 69, 19, 0.15) 1px, transparent 1px);
+    background-size: 70px 70px, 40px 40px;
+    background-position: 0 0, 35px 35px;
+    opacity: 0.6;
+}
+
+.facts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    text-align: center;
+}
+
+.fact {
+    padding: 30px;
+    background: rgba(245, 241, 241, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.fact:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.fact h3 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--accent-color);
+}
+
+.fact p {
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ====== Contact Section ====== */
+.contact-area {
+    padding: 80px 0;
+    background: var(--off-white);
+    position: relative;
+}
+
+.contact-area::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+}
+
+.contact-flex {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.contact-map {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 3px solid #f3d470ff;
+}
+
+.contact-map iframe {
+    display: block;
+}
+
+.contact-info {
+    background: linear-gradient(135deg, #ffffff 0%, #fdfbf7 100%);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    border: 2px solid #f4e5c0;
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-info::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.contact-info h4 {
+    font-size: 2rem;
+    background: linear-gradient(135deg, #d4af37 0%, #c9a961 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 30px;
+    font-weight: 700;
+    position: relative;
+}
+
+.contact-info p {
+    font-size: 1.1rem;
+    margin-bottom: 25px;
+    color: var(--dark-text);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.contact-info p:hover {
+    transform: translateX(5px);
+}
+
+/* 🌟 STYLES FOR CONTACT ICONS 🌟 */
+.contact-info-icon {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(145deg, #fcefa4 0%, #d4af37 30%, #c19c2c 60%, #b8941f 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333333;
+    font-size: 20px;
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.3),
+        inset 0 -3px 8px rgba(139, 101, 8, 0.4),
+        inset 0 3px 8px rgba(255, 248, 220, 0.7),
+        inset 0 0 15px rgba(255, 248, 220, 0.2);
+    border: 1px solid rgba(255, 248, 220, 0.6);
+    flex-shrink: 0;
+    transition: all 0.2s ease-in-out;
+}
+
+.contact-info-icon:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.4),
+        inset 0 -4px 10px rgba(139, 101, 8, 0.5),
+        inset 0 4px 10px rgba(255, 248, 220, 0.8),
+        inset 0 0 20px rgba(255, 248, 220, 0.3);
+}
+
+/* ====== Responsive Design ====== */
+@media (max-width: 992px) {
     .hero {
-        background: linear-gradient(135deg, #d4af37 0%, #f4e5c0 25%, #c9a961 50%, #f4e5c0 75%, #d4af37 100%);
-        height: 60vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        color: white;
+        min-height: 500px;
     }
 
     .hero-text h1 {
-        font-size: 4rem;
-        margin-bottom: 10px;
-        font-weight: 700;
-    }
-
-    .hero-text p {
-        font-size: 1.5rem;
-        margin-bottom: 30px;
-    }
-
-    .hero-btn {
-        display: inline-block;
-        padding: 12px 30px;
-        background: #d46137ff;
-        /* Gold color */
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-        font-weight: 600;
-        transition: background 0.3s;
-    }
-
-    .hero-btn:hover {
-        background: #c9a961;
-    }
-
-    /* Availability Section */
-    .bg-white-smoke {
-        background-color: #f5f5f5;
-    }
-
-    .availability-area {
-        padding: 60px 0;
-        text-align: center;
-    }
-
-    .availability-area h2 {
         font-size: 2.5rem;
-        background: linear-gradient(135deg, #d4af37 0%, #c9a961 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 5px;
-        font-weight: 700;
-    }
-
-    .availability-area h3 {
-        font-size: 1.8rem;
-        color: #64748b;
-        margin-bottom: 30px;
-        font-weight: 600;
-    }
-
-    .availability-form {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        background: white;
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        max-width: 900px;
-        margin: 0 auto;
-    }
-
-    .availability-form label {
-        display: flex;
-        flex-direction: column;
-        text-align: left;
-        font-weight: 500;
-        color: #333;
-        flex-grow: 1;
-    }
-
-    .availability-form select,
-    .availability-form input[type="number"] {
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        margin-top: 5px;
-        font-size: 1rem;
-    }
-
-    .availability-form button {
-        padding: 10px 20px;
-        border: none;
-        background: linear-gradient(135deg, #d4af37 0%, #c9a961 100%);
-        color: white;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
-        border-radius: 5px;
-        align-self: flex-end;
-        transition: background 0.3s;
-    }
-
-    .availability-form button:hover {
-        background: linear-gradient(135deg, #c9a961 0%, #b8941f 100%);
-    }
-
-    /* About Us Section */
-    .aboutus-area {
-        padding: 80px 0;
-    }
-
-    .aboutus-area h2 {
-        text-align: center;
-        font-size: 3rem;
-        color: #333;
-        margin-bottom: 50px;
-        font-weight: 700;
     }
 
     .aboutus-flex {
-        display: flex;
-        gap: 50px;
-    }
-
-    .aboutus-tabs-area {
-        flex: 0 0 250px;
-        /* Fixed width for tabs */
-    }
-
-    .aboutus-tabs {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .aboutus-tabs li {
-        padding: 15px 20px;
-        border-bottom: 1px solid #eee;
-        cursor: pointer;
-        font-weight: 500;
-        transition: background-color 0.3s, color 0.3s;
-    }
-
-    .aboutus-tabs li:last-child {
-        border-bottom: none;
-    }
-
-    .aboutus-tabs li:hover {
-        background-color: #f7f7f7;
-        color: #d4af37;
-    }
-
-    .aboutus-tabs li.active {
-        background: #d4af37;
-        color: white;
-        border-radius: 10px 10px 0 0;
-        /* Only top corners rounded if first item */
-    }
-
-    .aboutus-description {
-        flex-grow: 1;
-        background: white;
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        min-height: 350px;
-    }
-
-    .aboutus-description .content {
-        display: none;
-        animation: fadeIn 0.5s ease-in-out;
-    }
-
-    .aboutus-description .content.active {
-        display: block;
-    }
-
-    .aboutus-description p {
-        font-size: 1.1rem;
-        line-height: 1.8;
-        color: #555;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Fun Facts / Stats */
-    .fun-facts {
-        background: linear-gradient(135deg, #d4af37 0%, #d4af37 25%, #c9a961 50%, #e7d29cff 75%, #d4af37 100%);
-        color: white;
-        padding: 60px 0;
-        text-align: center;
-    }
-
-    .facts-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: 1fr;
         gap: 30px;
     }
 
-    .fact h3 {
-        font-size: 3.5rem;
-        font-weight: 700;
-        margin-bottom: 5px;
+    .aboutus-tabs-area {
+        flex: auto;
     }
 
-    .fact p {
-        font-size: 1.2rem;
-        font-weight: 300;
+    .aboutus-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        padding: 0;
     }
 
-    /* Contact Section */
-    .contact-area {
-        padding: 80px 0;
-        background-color: #f8f9fa;
+    .aboutus-tabs .tab {
+        flex-grow: 1;
+        text-align: center;
+        margin-bottom: 0;
+        border-radius: 0;
+        border-right: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .aboutus-tabs .tab:last-child {
+        border-right: none;
+    }
+
+    .aboutus-tabs .tab.active {
+        border-radius: 8px;
     }
 
     .contact-flex {
-        display: flex;
-        gap: 40px;
-        align-items: stretch;
+        grid-template-columns: 1fr;
     }
 
     .contact-map {
-        flex: 2;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        border: 1px solid #ddd;
-    }
-
-    .contact-map iframe {
-        display: block;
+        order: 2;
+        height: 350px;
     }
 
     .contact-info {
-        flex: 1;
-        background: white;
+        order: 1;
+    }
+}
+
+@media (max-width: 640px) {
+    .hero-text h1 {
+        font-size: 2rem;
+    }
+
+    .hero-text p {
+        font-size: 1.1rem;
+    }
+
+    .availability-area h2 {
+        font-size: 2rem;
+    }
+
+    .facts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .availability-form {
+        grid-template-columns: 1fr; /* On small screens, force single column */
+    }
+    
+    .aboutus-tabs {
+        flex-direction: column;
+    }
+    
+    .aboutus-tabs .tab {
+        border-right: none;
+    }
+    
+    .aboutus-description {
         padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
-
-    .contact-info h4 {
-        font-size: 1.8rem;
-        color: #d4af37;
-        margin-bottom: 25px;
-        font-weight: 700;
-    }
-
-    /* 🌟 STYLES FOR CONTACT ICONS 🌟 */
-    .contact-info p {
-        color: #64748b;
-        font-size: 1rem;
-        line-height: 1.8;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        /* Increased gap for larger icon */
-        margin-bottom: 15px;
-    }
-
-    .contact-info-icon {
-        width: 45px;
-        /* Slightly larger for more prominence */
-        height: 45px;
-        /* More pronounced gradient for a rounded, metallic look */
-        background: linear-gradient(145deg, #fcefa4 0%, #d4af37 30%, #c19c2c 60%, #b8941f 100%);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #333333;
-        /* Darker icon color for contrast against brighter gold */
-        font-size: 20px;
-        /* Slightly larger icon */
-        /* Enhanced shadows for depth */
-        box-shadow:
-            0 8px 20px rgba(0, 0, 0, 0.3),
-            /* Stronger outer shadow */
-            inset 0 -3px 8px rgba(139, 101, 8, 0.4),
-            /* Bottom inner shadow for depth */
-            inset 0 3px 8px rgba(255, 248, 220, 0.7),
-            /* Top inner highlight */
-            inset 0 0 15px rgba(255, 248, 220, 0.2);
-        /* Subtle overall inner glow */
-        border: 1px solid rgba(255, 248, 220, 0.6);
-        /* Slightly softer border */
-        flex-shrink: 0;
-        transition: all 0.2s ease-in-out;
-        /* Smooth transition for hover effects if added later */
-    }
-
-    /* Optional: Add a hover effect to make them interactive */
-    .contact-info-icon:hover {
-        transform: translateY(-2px);
-        /* Slight lift on hover */
-        box-shadow:
-            0 10px 25px rgba(0, 0, 0, 0.4),
-            inset 0 -4px 10px rgba(139, 101, 8, 0.5),
-            inset 0 4px 10px rgba(255, 248, 220, 0.8),
-            inset 0 0 20px rgba(255, 248, 220, 0.3);
-    }
-
-
-    /* Responsive Design */
-    @media (max-width: 992px) {
-        .availability-form {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 15px;
-        }
-
-        .availability-form button {
-            align-self: auto;
-        }
-
-        .aboutus-flex {
-            flex-direction: column;
-        }
-
-        .aboutus-tabs-area {
-            flex: auto;
-        }
-
-        .aboutus-tabs {
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .aboutus-tabs li {
-            flex-grow: 1;
-            text-align: center;
-            border-right: 1px solid #eee;
-            border-bottom: 1px solid #eee;
-        }
-
-        .aboutus-tabs li:last-child {
-            border-right: none;
-        }
-
-        .facts-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .contact-flex {
-            flex-direction: column;
-        }
-
-        .contact-map {
-            order: 2;
-        }
-
-        .contact-info {
-            order: 1;
-        }
-    }
-
-    @media (max-width: 600px) {
-        .hero-text h1 {
-            font-size: 2.5rem;
-        }
-
-        .hero-text p {
-            font-size: 1.2rem;
-        }
-
-        .aboutus-area h2 {
-            font-size: 2rem;
-        }
-
-        .facts-grid {
-            grid-template-columns: 1fr;
-        }
-    }
+}
 </style>
 
 <section class="hero">
@@ -435,7 +703,9 @@ require_once __DIR__ . '/../includes/header.php';
             <label>Price (Max)
                 <input type="number" name="price_max" placeholder="₱0">
             </label>
-            <button type="submit">Check Availability</button>
+            <label class="submit-button-container">
+                <button type="submit" class="availability-submit-btn">Check Availability</button>
+            </label>
         </form>
     </div>
 </section>

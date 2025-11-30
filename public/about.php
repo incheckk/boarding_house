@@ -33,7 +33,7 @@ $profile_image = "malupiton.jpg"
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: 
+            background-image:
                 radial-gradient(circle, rgba(212, 175, 55, 0.08) 1px, transparent 1px),
                 radial-gradient(circle, rgba(218, 165, 32, 0.06) 1.5px, transparent 1.5px);
             background-size: 60px 60px, 100px 100px;
@@ -58,7 +58,7 @@ $profile_image = "malupiton.jpg"
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: 
+            background-image:
                 radial-gradient(circle, rgba(255, 255, 255, 0.3) 2px, transparent 2px),
                 radial-gradient(circle, rgba(255, 215, 0, 0.4) 1.5px, transparent 1.5px),
                 radial-gradient(circle, rgba(139, 69, 19, 0.2) 1px, transparent 1px);
@@ -68,10 +68,13 @@ $profile_image = "malupiton.jpg"
         }
 
         @keyframes shimmer {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
                 transform: translateY(0);
             }
+
             50% {
                 opacity: 0.7;
                 transform: translateY(-10px);
@@ -100,6 +103,8 @@ $profile_image = "malupiton.jpg"
             background: rgba(248, 249, 250, 0.8);
             position: relative;
             z-index: 1;
+            text-align: left;
+            /* aligned to the left */
         }
 
         .breadcrumb a {
@@ -136,7 +141,7 @@ $profile_image = "malupiton.jpg"
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: 
+            background-image:
                 radial-gradient(circle, rgba(212, 175, 55, 0.08) 1px, transparent 1px),
                 radial-gradient(circle, rgba(201, 169, 97, 0.06) 1px, transparent 1px);
             background-size: 50px 50px, 80px 80px;
@@ -422,8 +427,8 @@ $profile_image = "malupiton.jpg"
 <body>
     <!-- About Hero Section -->
     <section class="about-hero">
-        <h1>About</h1>
-        <p>About our company</p>
+        <h1>About</hh1>
+            <p>About our company</p>
     </section>
 
     <!-- Breadcrumb -->
@@ -447,12 +452,15 @@ $profile_image = "malupiton.jpg"
             </div>
             <div class="content-right">
                 <p>
-                    Sed pellentesque pulvinar arcu ac congue. Sed sed est nec justo maximus blandit. Curabitur lacinia,
-                    eros sit amet maximus suscipit, magna sapien veneuynatlis eros, et gravida urna massa ut lectus.
-                    Quisque lacinia laciunia viverra. Nullram nec est et lorem sodales ornare a in sapien. In trtset
-                    urna maximus, conse ctetur iligula in, gravida erat. Nullam dignifssrim hendrerit auctor. Sed
-                    varius, dolor vitae iaculis condim rtweentum, massa nisl cursus sapien, gravida ultrices nisl dolor
-                    non erat.
+                    Our boarding house offers the best rent service designed to make your life easier, giving you a
+                    comfortable place to stay where you can focus on enjoying your days instead of stressing about where
+                    to live. We make sure every part of your stay feels simple and convenient, from the cleanliness of
+                    your room to the support you receive whenever you need help. You can settle in with confidence
+                    knowing that the environment is safe, peaceful, and built to support your daily routine. Whether
+                    you’re a student, a worker, or someone looking for a calm place to call home, our boarding house is
+                    meant to give you a balanced life where comfort, security, and quality come together. Here, you can
+                    relax, stay productive, and enjoy your life without the usual worries that come with finding a good
+                    place to stay.
                 </p>
             </div>
         </div>
@@ -463,22 +471,14 @@ $profile_image = "malupiton.jpg"
         <div class="profile-image">
             <img src="assets/images/malupiton.jpg" alt="Mr. Villagracia">
         </div>
-        <h2 class="profile-name">Mr. Villagracia</h2>
-        <p class="profile-title">Rent House Admin</p>
+        <h2 class="profile-name">Mrs. Villagracia</h2>
+        <p class="profile-title">Admin/Owner</p>
         <p class="profile-bio">
-            Cras et mauris eget lorem ultricies fermentum a in diam. Morbi mollis pesilentesque aug ue nec rhoncus. Nam
-            ut ogrci augue. Phasellus ac venenatis orci. Nulalam iaculis lao reet maa, vitae tempus ante tincidunte et.
-            dolor st ametisnj, consectetur adipiscing elit. Cras vitale nbh nisl. Cras et mauis eget loremams ultricies
-            ferme ntum a in diam.Nam ut orci augue. Pha sellus ac venen adatis orci. Nullam iaculis lao reetings mag,
-            vitae tempus ante tincidunte et.
+            The person responsible for keeping the website updated, secure, and organized, making sure that every
+            feature works correctly, all content is accurate, and any issues are quickly resolved, so that everyone who
+            visits or uses the site can do so smoothly, safely, and without any problems or interruptions.
         </p>
-        <div class="social-links">
-            <div class="social-left">
-                <span>Follow me :</span>
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                </div>
+        
             </div>
             <div class="signature">VILLAGRACIA</div>
         </div>
