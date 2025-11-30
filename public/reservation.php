@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$room_id]);
 
             $message = "Reservation submitted successfully!";
-            preventResubmission();
+            preventResubmission();  // Prevent resubmission on refresh
         } catch (PDOException $e) {
             $errors[] = "Database error: " . $e->getMessage();
         }

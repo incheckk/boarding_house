@@ -4,7 +4,21 @@ require_once __DIR__ . '/php/admin-header.php';
 require_once __DIR__ . '/php/admin-sidebar.php';
 require_once __DIR__ . '/../includes/auth.php';  // Ensure admin is logged in
 require_once __DIR__ . '/../includes/db.php';
-
+// Sync room statuses with active roomtenant records (fix inconsistency)
+$pdo->exec("
+    UPDATE room r
+    LEFT JOIN (
+        SELECT room_id, COUNT(*) AS active_tenants
+        FROM roomtenant
+        WHERE check_out_date IS NULL
+        GROUP BY room_id
+    ) rt ON r.room_id = rt.room_id
+    SET r.rstat_id = CASE 
+        WHEN rt.active_tenants > 0 THEN 2  -- Occupied
+        WHEN r.rstat_id = 3 THEN 3  -- Preserve Reserved if no tenant but reserved
+        ELSE 1  -- Available
+    END
+");
 $message = "";
 $editRoom = null;
 

@@ -8,6 +8,13 @@ require_once __DIR__ . '/../includes/db.php';
 $message = "";
 $editTenant = null;
 
+// Cleanup: Remove prospective tenants with no active reservations (follows reject logic)
+$pdo->exec("
+    DELETE t FROM tenant t
+    LEFT JOIN reservation r ON t.tenant_id = r.tenant_id AND r.restat_id IN (1, 2)  -- Pending or Approved
+    WHERE t.tstat_id = 1 AND r.reservation_id IS NULL  -- Prospective with no reservations
+");
+
 // Handle form submission (Add or Update)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $first_name = trim($_POST['first_name']);
@@ -126,21 +133,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Handle delete (UPDATED: Mark as churned instead of deleting)
+// Handle delete (UPDATED: Log to churned_tenants with dates, then fully delete tenant)
 if (isset($_GET['delete_tenant'])) {
     $tenant_id = intval($_GET['delete_tenant']);
     try {
-        // Set check_out_date to today in roomtenant (mark as churned)
-        $stmt = $pdo->prepare("UPDATE roomtenant SET check_out_date = CURDATE() WHERE tenant_id = ? AND check_out_date IS NULL");
+        // Fetch tenant details and room history for logging
+        $stmt = $pdo->prepare("SELECT first_name, last_name, middle_name, number, emergency_number, email FROM tenant WHERE tenant_id = ?");
         $stmt->execute([$tenant_id]);
-
-        // Free the room
-        $stmt = $pdo->prepare("UPDATE room SET rstat_id = 1 WHERE room_id = (SELECT room_id FROM roomtenant WHERE tenant_id = ? AND check_out_date = CURDATE() LIMIT 1)");
+        $tenantData = $stmt->fetch();
+        
+        // Fetch check-in and check-out dates from roomtenant
+        $stmt = $pdo->prepare("SELECT MIN(check_in_date) AS check_in_date, MAX(check_out_date) AS check_out_date FROM roomtenant WHERE tenant_id = ?");
         $stmt->execute([$tenant_id]);
-
-        $message = "Tenant marked as churned (check-out date set).";
+        $roomData = $stmt->fetch();
+        
+        if ($tenantData) {
+            // Log to churned_tenants (set check_out_date to CURDATE() if NULL for consistency)
+            $checkOutDate = $roomData['check_out_date'] ?? date('Y-m-d');
+            $stmt = $pdo->prepare("INSERT INTO churned_tenants (tenant_id, first_name, last_name, middle_name, number, emergency_number, email, check_in_date, check_out_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$tenant_id, $tenantData['first_name'], $tenantData['last_name'], $tenantData['middle_name'], $tenantData['number'], $tenantData['emergency_number'], $tenantData['email'], $roomData['check_in_date'], $checkOutDate]);
+            
+            // Free the room if assigned (set check_out and update room status)
+            $stmt = $pdo->prepare("UPDATE roomtenant SET check_out_date = CURDATE() WHERE tenant_id = ? AND check_out_date IS NULL");
+            $stmt->execute([$tenant_id]);
+            
+            $stmt = $pdo->prepare("UPDATE room SET rstat_id = 1 WHERE room_id = (SELECT room_id FROM roomtenant WHERE tenant_id = ? AND check_out_date = CURDATE() LIMIT 1)");
+            $stmt->execute([$tenant_id]);
+            
+            // Now, delete the tenant (cascades to roomtenant)
+            $stmt = $pdo->prepare("DELETE FROM tenant WHERE tenant_id = ?");
+            $stmt->execute([$tenant_id]);
+            
+            $message = "Tenant removed successfully.";
+        } else {
+            $message = "Tenant not found.";
+        }
     } catch (PDOException $e) {
-        $message = "Error marking tenant as churned: " . $e->getMessage();
+        $message = "Error churning tenant: " . $e->getMessage();
     }
 }
 
