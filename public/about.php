@@ -427,7 +427,7 @@ $profile_image = "malupiton.jpg"
 <body>
     <!-- About Hero Section -->
     <section class="about-hero">
-        <h1>About</hh1>
+        <h1>About</h1>
             <p>About our company</p>
     </section>
 

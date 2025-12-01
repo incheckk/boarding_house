@@ -13,13 +13,13 @@ $monthlyRevenue = $pdo->query("SELECT COALESCE(SUM(received_amount), 0) AS sum F
 
 // ADDED: Fetch tenant churn and stay data
 $totalTenants = $pdo->query("SELECT COUNT(*) AS count FROM tenant")->fetch()['count'];
-$churnedTenantsLastQuarter = $pdo->query("
+$churnedTenantsLastQuarter = $pdo->query(query: "
     SELECT COUNT(*) AS count
     FROM churned_tenants
     WHERE churn_date >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
 ")->fetch()['count'];
 $churnRate = $totalTenants > 0 ? round(($churnedTenantsLastQuarter / $totalTenants) * 100, 1) : 0;
-$avgStay = $pdo->query("
+$avgStay = $pdo->query("    
     SELECT COALESCE(AVG(TIMESTAMPDIFF(MONTH, check_in_date, check_out_date)), 0) AS avg_stay
     FROM churned_tenants
 ")->fetch()['avg_stay'];

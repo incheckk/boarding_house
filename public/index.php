@@ -7,8 +7,7 @@ require_once __DIR__ . '/../includes/header.php';
 
 <style>
 /* ================================================================= */
-/* MERGED & CONSOLIDATED CSS STYLES */
-/* (Form button placement and About Us gold glow are finalized) */
+/* IMPROVED & CONSISTENT DESIGN - CASA VILLAGRACIA */
 /* ================================================================= */
 
 * {
@@ -18,32 +17,30 @@ require_once __DIR__ . '/../includes/header.php';
 }
 
 :root {
-    --primary-color: linear-gradient(
-        #cfa049 80%, 
-        #a8763a 100% 
-    );
-    --secondary-color: #f60a0a;
-    --accent-color: #080820;
-    --dark-text: #2d2d2d;
-    --light-text: #666;
+    --primary-gold: #d4af37;
+    --gold-light: #f4e5c0;
+    --gold-dark: #c9a961;
+    --gold-darker: #a8763a;
+    --secondary-red: #f60a0a;
+    --accent-dark: #080820;
+    --text-dark: #2d2d2d;
+    --text-light: #666;
     --white: #ffffff;
     --off-white: #f8f9fa;
-    --border-color: #e0e0e0;
-    --shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-    --shadow-hover: 0 5px 25px rgba(0, 0, 0, 0.15);
+    --border-light: #e0e0e0;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.16);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    color: var(--dark-text);
-    background: linear-gradient(
-        180deg,
-        #fdfbf7 0%,
-        #f5f0e8 50%,
-        #fdfbf7 100%
-    );
+    color: var(--text-dark);
+    background: linear-gradient(180deg, #fdfbf7 0%, #f5f0e8 50%, #fdfbf7 100%);
     position: relative;
+    overflow-x: hidden;
 }
 
 body::before {
@@ -54,10 +51,8 @@ body::before {
     right: 0;
     bottom: 0;
     background-image: 
-        radial-gradient(circle, rgba(212, 175, 55, 0.08) 1px, transparent 1px),
-        radial-gradient(circle, rgba(218, 165, 32, 0.06) 1.5px, transparent 1.5px);
-    background-size: 60px 60px, 100px 100px;
-    background-position: 0 0, 30px 30px;
+        radial-gradient(circle, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
     pointer-events: none;
     z-index: 0;
 }
@@ -70,17 +65,35 @@ body::before {
     z-index: 1;
 }
 
-/* ====== Hero Section ====== */
+/* ====== SECTION HEADERS (Consistent Style) ====== */
+.section-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-gold) 0%, var(--gold-dark) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* ====== HERO SECTION ====== */
 .hero {
-    background: linear-gradient(
-        135deg,
-        #d4af37 0%,
-        #f4e5c0 25%,
-        #c9a961 50%,
-        #f4e5c0 75%,
-        #d4af37 100%
-    );
-    min-height: 645px;
+    background: linear-gradient(135deg, var(--primary-gold) 0%, var(--gold-light) 25%, var(--gold-dark) 50%, var(--gold-light) 75%, var(--primary-gold) 100%);
+    min-height: 720px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -93,708 +106,649 @@ body::before {
 .hero::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background-image: 
-        radial-gradient(circle, rgba(255, 255, 255, 0.3) 2px, transparent 2px),
-        radial-gradient(circle, rgba(255, 215, 0, 0.4) 1.5px, transparent 1.5px),
-        radial-gradient(circle, rgba(139, 69, 19, 0.2) 1px, transparent 1px);
-    background-size: 80px 80px, 120px 120px, 50px 50px;
-    background-position: 0 0, 40px 40px, 20px 20px;
-    animation: shimmer 20s ease-in-out infinite;
-}
-
-.hero::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at 70% 30%, rgba(255, 215, 0, 0.15), transparent 50%),
-                radial-gradient(circle at 30% 70%, rgba(218, 165, 32, 0.15), transparent 50%);
+        radial-gradient(circle, rgba(255, 255, 255, 0.2) 2px, transparent 2px),
+        radial-gradient(circle, rgba(255, 215, 0, 0.3) 1.5px, transparent 1.5px);
+    background-size: 80px 80px, 120px 120px;
+    background-position: 0 0, 40px 40px;
+    animation: shimmer 25s ease-in-out infinite;
 }
 
 @keyframes shimmer {
-    0%, 100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    50% {
-        opacity: 0.7;
-        transform: translateY(-10px);
-    }
+    0%, 100% { opacity: 1; transform: translateY(0); }
+    50% { opacity: 0.6; transform: translateY(-15px); }
 }
 
-.hero-text {
+.hero-content {
     position: relative;
     z-index: 2;
-    max-width: 700px;
-    padding: 20px;
+    max-width: 780px;
+    padding: 40px 20px;
     animation: fadeInUp 1s ease-out;
 }
 
-.hero-text h1 {
+.hero-title {
     font-size: 3.5rem;
     font-weight: 700;
     margin-bottom: 20px;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: 3px;
+    text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
+    line-height: 1.2;
 }
 
-.hero-text p {
+.hero-description {
     font-size: 1.4rem;
-    margin-bottom: 30px;
+    margin-bottom: 35px;
     font-weight: 300;
     letter-spacing: 1px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .hero-btn {
     display: inline-block;
-    padding: 15px 40px;
-    background: var(--secondary-color);
+    padding: 16px 48px;
+    background: var(--secondary-red);
     color: var(--white);
     text-decoration: none;
     border-radius: 50px;
     font-weight: 600;
     font-size: 1.1rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(255, 120, 53, 0.449);
+    transition: var(--transition);
+    box-shadow: 0 4px 20px rgba(246, 10, 10, 0.4);
 }
 
 .hero-btn:hover {
-    background: var(--accent-color);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 165, 0, 0.5);
+    background: var(--accent-dark);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 28px rgba(8, 8, 32, 0.5);
 }
 
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* ====== Availability Section ====== */
-.availability-area {
+/* ====== AVAILABILITY SECTION ====== */
+.availability-section {
     padding: 80px 0;
-    background: white;
+    background: var(--white);
 }
 
-.bg-white-smoke {
-    background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
-}
-
-.availability-area h2 {
-    text-align: center;
-    font-size: 2.5rem;
-    background: var(--primary-color);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 10px;
-    font-weight: 700;
-}
-
-.availability-area h3 {
-    text-align: center;
-    font-size: 1.2rem;
-    color: var(--light-text);
-    margin-bottom: 40px;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-.availability-form {
-    display: grid;
-    /* Updated to allow for 4 columns */
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
+.search-form {
     max-width: 1000px;
     margin: 0 auto;
     background: var(--white);
     padding: 40px;
-    border-radius: 15px;
-    box-shadow: var(--shadow);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(212, 175, 55, 0.2);
 }
 
-.availability-form label {
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    align-items: end;
+}
+
+.form-group {
     display: flex;
     flex-direction: column;
-    font-weight: 600;
-    color: var(--dark-text);
-    font-size: 0.95rem;
-    text-align: left;
-    flex-grow: 1;
 }
 
-.availability-form select,
-.availability-form input {
-    margin-top: 8px;
-    padding: 12px 15px;
-    border: 2px solid var(--border-color);
-    border-radius: 8px;
+.form-label {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+}
+
+.form-input,
+.form-select {
+    padding: 14px 16px;
+    border: 2px solid var(--border-light);
+    border-radius: 10px;
     font-size: 1rem;
-    transition: all 0.3s ease;
+    transition: var(--transition);
+    background: var(--off-white);
+    font-family: inherit;
+}
+
+.form-input:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--primary-gold);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.form-submit {
+    padding: 14px 16px;
+    background: linear-gradient(135deg, var(--primary-gold) 0%, var(--gold-dark) 100%);
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: inherit;
+}
+
+.form-submit:hover {
+    background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-darker) 100%);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* ====== ABOUT US SECTION ====== */
+.about-section {
+    padding: 80px 0;
     background: var(--off-white);
 }
 
-.availability-form select:focus,
-.availability-form input:focus {
-    outline: none;
-    border-color: #d4af37;
-    background: var(--white);
-}
-
-/* New container class for button alignment */
-.submit-button-container {
-    display: flex; 
-    flex-direction: column;
-    /* Pushes the button down to align with the bottom of the input fields */
-    justify-content: flex-end; 
-}
-
-/* Targeted styling for the button */
-.availability-submit-btn {
-    width: 100%;
-    /* Adjusted padding to match input field height better */
-    padding: 12px 15px; 
-    background: linear-gradient(135deg, #d4af37 0%, #c9a961 100%);
-    color: var(--white);
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    height: auto; 
-    margin-top: 0; 
-}
-
-.availability-submit-btn:hover {
-    background: #d8c29a;
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-hover);
-    color: var(--dark-text);
-}
-
-
-/* ====== About Us Section ====== */
-.aboutus-area {
-    padding: 80px 0;
-    background: whitesmoke;
-}
-
-.aboutus-area h2 {
-    text-align: center;
-    font-size: 2.5rem;
-    background: var(--primary-color);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 50px;
-    font-weight: 700;
-}
-
-.aboutus-flex {
+.about-container {
     display: grid;
-    grid-template-columns: 250px 1fr;
-    gap: 40px;
-    max-width: 1000px;
+    grid-template-columns: 280px 1fr;
+    gap: 30px;
+    max-width: 1100px;
     margin: 0 auto;
 }
 
-.aboutus-tabs-area {
-    background: var(--off-white);
-    border-radius: 12px;
+.tabs-wrapper {
+    background: var(--white);
+    border-radius: 16px;
     padding: 20px;
-    /* Added Gold Glow and Border */
-    box-shadow: var(--shadow), 0 0 15px rgba(212, 175, 55, 0.4); 
-    border: 1px solid rgba(212, 175, 55, 0.6); 
-    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm), 0 0 0 1px rgba(212, 175, 55, 0.15);
+    height: fit-content;
+    position: sticky;
+    top: 20px;
 }
 
-.aboutus-tabs-area:hover {
-    box-shadow: var(--shadow-hover), 0 0 25px rgba(212, 175, 55, 0.7);
-    border-color: rgba(212, 175, 55, 0.8);
-}
-
-
-.aboutus-tabs {
+.tabs-list {
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.aboutus-tabs .tab {
-    padding: 15px 20px;
-    margin-bottom: 10px;
+.tab-item {
+    padding: 16px 20px;
     cursor: pointer;
-    border-radius: 8px;
-    transition: all 0.3s ease;
+    border-radius: 10px;
+    transition: var(--transition);
     font-weight: 500;
-    color: var(--dark-text);
+    color: var(--text-dark);
+    font-size: 0.95rem;
 }
 
-.aboutus-tabs .tab:hover {
-    background: linear-gradient(135deg, #fdfbf7 0%, #f5f0e8 100%);
-    color: var(--dark-text);
-    transform: translateX(5px);
-}
-
-.aboutus-tabs .tab.active {
-    background: linear-gradient(135deg, #d4af37 0%, #c9a961 100%);
-    color: var(--white);
-    box-shadow: 0px 4px 15px rgba(212, 175, 55, 0.3);
-    border-radius: 8px;
-}
-
-.aboutus-description {
+.tab-item:hover {
     background: var(--off-white);
-    border-radius: 12px;
-    padding: 60px;
-    /* Added Gold Glow and Border */
-    box-shadow: var(--shadow), 0 0 15px rgba(212, 175, 55, 0.4); 
-    border: 1px solid rgba(212, 175, 55, 0.6); 
-    min-height: 350px;
-    transition: all 0.3s ease;
+    transform: translateX(4px);
 }
 
-.aboutus-description:hover {
-    box-shadow: var(--shadow-hover), 0 0 25px rgba(212, 175, 55, 0.7);
-    border-color: rgba(212, 175, 55, 0.8);
+.tab-item.active {
+    background: linear-gradient(135deg, var(--primary-gold) 0%, var(--gold-dark) 100%);
+    color: var(--white);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
 }
 
-.aboutus-description .content {
+.content-wrapper {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 50px;
+    box-shadow: var(--shadow-sm), 0 0 0 1px rgba(212, 175, 55, 0.15);
+    min-height: 300px;
+}
+
+.content-panel {
     display: none;
-    animation: fadeIn 0.5s ease;
+    animation: fadeIn 0.4s ease;
 }
 
-.aboutus-description .content.active {
+.content-panel.active {
     display: block;
 }
 
-.aboutus-description p {
+.content-text {
     font-size: 1.1rem;
     line-height: 1.8;
-    color: var(--light-text);
+    color: var(--text-light);
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* ====== Fun Facts Section ====== */
-.fun-facts {
+/* ====== FUN FACTS SECTION ====== */
+.facts-section {
     padding: 80px 0;
-    background: linear-gradient(
-        135deg,
-        #c9a961 0%,
-        #f4e5c0 25%,
-        #d4af37 50%,
-        #f4e5c0 75%,
-        #c9a961 100%
-    );
+    background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-light) 25%, var(--primary-gold) 50%, var(--gold-light) 75%, var(--gold-dark) 100%);
     color: var(--white);
-    text-align: center;
     position: relative;
     overflow: hidden;
 }
 
-.fun-facts::before {
+.facts-section::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background-image: 
-        radial-gradient(circle, rgba(255, 255, 255, 0.4) 2px, transparent 2px),
-        radial-gradient(circle, rgba(139, 69, 19, 0.15) 1px, transparent 1px);
-    background-size: 70px 70px, 40px 40px;
-    background-position: 0 0, 35px 35px;
-    opacity: 0.6;
+        radial-gradient(circle, rgba(255, 255, 255, 0.3) 2px, transparent 2px);
+    background-size: 60px 60px;
+    opacity: 0.5;
 }
 
 .facts-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 40px;
-    text-align: center;
-}
-
-.fact {
-    padding: 30px;
-    background: rgba(245, 241, 241, 0.1);
-    border-radius: 12px;
-    backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
-}
-
-.fact:hover {
-    transform: translateY(-10px);
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.fact h3 {
-    font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: 10px;
-    color: var(--accent-color);
-}
-
-.fact p {
-    font-size: 1.1rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* ====== Contact Section ====== */
-.contact-area {
-    padding: 80px 0;
-    background: var(--off-white);
-    position: relative;
-}
-
-.contact-area::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-        radial-gradient(circle, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
-    background-size: 50px 50px;
-    pointer-events: none;
-}
-
-.contact-flex {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 40px;
-    max-width: 1100px;
-    margin: 0 auto;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 30px;
     position: relative;
     z-index: 1;
 }
 
-.contact-map {
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: var(--shadow);
-    border: 3px solid #f3d470ff;
+.fact-card {
+    padding: 40px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+    transition: var(--transition);
 }
 
-.contact-map iframe {
+.fact-card:hover {
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+}
+
+.fact-number {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--accent-dark);
+    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+.fact-label {
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+/* ====== CONTACT SECTION ====== */
+.contact-section {
+    padding: 80px 0;
+    background: var(--white);
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.map-container {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    border: 2px solid var(--gold-light);
+    height: 450px;
+}
+
+.map-container iframe {
     display: block;
+    width: 100%;
+    height: 100%;
 }
 
-.contact-info {
-    background: linear-gradient(135deg, #ffffff 0%, #fdfbf7 100%);
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: var(--shadow);
-    border: 2px solid #f4e5c0;
-    position: relative;
-    overflow: hidden;
+.contact-card {
+    background: linear-gradient(135deg, var(--white) 0%, var(--off-white) 100%);
+    padding: 40px 30px;
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(212, 175, 55, 0.2);
 }
 
-.contact-info::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
-    pointer-events: none;
-}
-
-.contact-info h4 {
+.contact-title {
     font-size: 2rem;
-    background: linear-gradient(135deg, #d4af37 0%, #c9a961 100%);
+    background: linear-gradient(135deg, var(--primary-gold) 0%, var(--gold-dark) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin-bottom: 30px;
     font-weight: 700;
-    position: relative;
 }
 
-.contact-info p {
-    font-size: 1.1rem;
-    margin-bottom: 25px;
-    color: var(--dark-text);
+.contact-item {
     display: flex;
     align-items: center;
-    gap: 15px;
-    position: relative;
-    transition: all 0.3s ease;
+    gap: 16px;
+    margin-bottom: 24px;
+    color: var(--text-dark);
+    font-size: 1rem;
+    transition: var(--transition);
 }
 
-.contact-info p:hover {
+.contact-item:hover {
     transform: translateX(5px);
 }
 
-/* 🌟 STYLES FOR CONTACT ICONS 🌟 */
-.contact-info-icon {
-    width: 45px;
-    height: 45px;
-    background: linear-gradient(145deg, #fcefa4 0%, #d4af37 30%, #c19c2c 60%, #b8941f 100%);
+.contact-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(145deg, #fcefa4 0%, var(--primary-gold) 30%, #c19c2c 60%, #b8941f 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #333333;
-    font-size: 20px;
-    box-shadow:
-        0 8px 20px rgba(0, 0, 0, 0.3),
-        inset 0 -3px 8px rgba(139, 101, 8, 0.4),
-        inset 0 3px 8px rgba(255, 248, 220, 0.7),
-        inset 0 0 15px rgba(255, 248, 220, 0.2);
-    border: 1px solid rgba(255, 248, 220, 0.6);
+    color: #333;
+    font-size: 18px;
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.15),
+        inset 0 -2px 6px rgba(139, 101, 8, 0.3),
+        inset 0 2px 6px rgba(255, 248, 220, 0.6);
+    border: 1px solid rgba(255, 248, 220, 0.5);
     flex-shrink: 0;
-    transition: all 0.2s ease-in-out;
+    transition: var(--transition);
 }
 
-.contact-info-icon:hover {
+.contact-icon:hover {
     transform: translateY(-2px);
-    box-shadow:
-        0 10px 25px rgba(0, 0, 0, 0.4),
-        inset 0 -4px 10px rgba(139, 101, 8, 0.5),
-        inset 0 4px 10px rgba(255, 248, 220, 0.8),
-        inset 0 0 20px rgba(255, 248, 220, 0.3);
+    box-shadow: 
+        0 6px 16px rgba(0, 0, 0, 0.2),
+        inset 0 -3px 8px rgba(139, 101, 8, 0.4),
+        inset 0 3px 8px rgba(255, 248, 220, 0.7);
 }
 
-/* ====== Responsive Design ====== */
+/* ====== RESPONSIVE DESIGN ====== */
 @media (max-width: 992px) {
     .hero {
         min-height: 500px;
     }
-
-    .hero-text h1 {
-        font-size: 2.5rem;
-    }
-
-    .aboutus-flex {
-        grid-template-columns: 1fr;
-        gap: 30px;
-    }
-
-    .aboutus-tabs-area {
-        flex: auto;
-    }
-
-    .aboutus-tabs {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-around;
-        padding: 0;
-    }
-
-    .aboutus-tabs .tab {
-        flex-grow: 1;
-        text-align: center;
-        margin-bottom: 0;
-        border-radius: 0;
-        border-right: 1px solid #eee;
-        border-bottom: 1px solid #eee;
+    
+    .hero-title {
+        font-size: 2.8rem;
     }
     
-    .aboutus-tabs .tab:last-child {
-        border-right: none;
+    .section-title {
+        font-size: 2.2rem;
     }
-
-    .aboutus-tabs .tab.active {
-        border-radius: 8px;
+    
+    .about-container {
+        grid-template-columns: 1fr;
+        gap: 25px;
     }
-
-    .contact-flex {
+    
+    .tabs-wrapper {
+        position: static;
+    }
+    
+    .tabs-list {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .tab-item {
+        flex: 1 1 calc(50% - 5px);
+        text-align: center;
+        min-width: 140px;
+    }
+    
+    .tab-item:hover {
+        transform: none;
+    }
+    
+    .contact-grid {
         grid-template-columns: 1fr;
     }
-
-    .contact-map {
+    
+    .map-container {
         order: 2;
         height: 350px;
     }
-
-    .contact-info {
+    
+    .contact-card {
         order: 1;
     }
 }
 
-@media (max-width: 640px) {
-    .hero-text h1 {
-        font-size: 2rem;
-    }
-
-    .hero-text p {
-        font-size: 1.1rem;
-    }
-
-    .availability-area h2 {
-        font-size: 2rem;
-    }
-
-    .facts-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .availability-form {
-        grid-template-columns: 1fr; /* On small screens, force single column */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.2rem;
+        letter-spacing: 1.5px;
     }
     
-    .aboutus-tabs {
+    .hero-description {
+        font-size: 1.2rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .section-subtitle {
+        font-size: 1rem;
+    }
+    
+    .search-form {
+        padding: 30px 20px;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .content-wrapper {
+        padding: 35px 25px;
+    }
+    
+    .facts-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 20px;
+    }
+    
+    .fact-number {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    .hero {
+        min-height: 450px;
+    }
+    
+    .hero-title {
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+    }
+    
+    .hero-description {
+        font-size: 1.1rem;
+    }
+    
+    .hero-btn {
+        padding: 14px 36px;
+        font-size: 1rem;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+    }
+    
+    .search-form {
+        padding: 25px 15px;
+    }
+    
+    .tabs-list {
         flex-direction: column;
     }
     
-    .aboutus-tabs .tab {
-        border-right: none;
+    .tab-item {
+        flex: 1 1 auto;
     }
     
-    .aboutus-description {
-        padding: 30px;
+    .content-wrapper {
+        padding: 25px 20px;
+    }
+    
+    .content-text {
+        font-size: 1rem;
+    }
+    
+    .contact-card {
+        padding: 30px 20px;
+    }
+    
+    .contact-title {
+        font-size: 1.6rem;
+    }
+    
+    .contact-item {
+        font-size: 0.95rem;
     }
 }
 </style>
 
 <section class="hero">
-    <div class="hero-text">
-        <h1>Welcome to CASA VILLAGRACIA</h1>
-        <p>Comfortable, safe, and affordable rooms.</p>
+    <div class="hero-content">
+        <h1 class="hero-title">Welcome to CASA VILLAGRACIA</h1>
+        <p class="hero-description">Comfortable, safe, and affordable rooms.</p>
         <a href="rooms.php" class="hero-btn">View Rooms</a>
     </div>
 </section>
 
-<section class="availability-area bg-white-smoke">
+<section class="availability-section">
     <div class="container">
-        <h2>For rates & Availability</h2>
-        <h3>Search your ROOM</h3>
-        <form action="rooms.php" method="get" class="availability-form">
-            <label>Room Type
-                <select name="type">
-                    <option value="">Any</option>
-                    <option value="single">Single</option>
-                    <option value="double">Double</option>
-                    <option value="bunk">Bunk Bed</option>
-                </select>
-            </label>
-            <label>Price (Min)
-                <input type="number" name="price_min" placeholder="₱0">
-            </label>
-            <label>Price (Max)
-                <input type="number" name="price_max" placeholder="₱0">
-            </label>
-            <label class="submit-button-container">
-                <button type="submit" class="availability-submit-btn">Check Availability</button>
-            </label>
+        <div class="section-header">
+            <h2 class="section-title">For Rates & Availability</h2>
+            <p class="section-subtitle">Search Your Room</p>
+        </div>
+        <form action="rooms.php" method="get" class="search-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Room Type</label>
+                    <select name="type" class="form-select">
+                        <option value="">Any</option>
+                        <option value="single">Single</option>
+                        <option value="double">Double</option>
+                        <option value="bunk">Bunk Bed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Price (Min)</label>
+                    <input type="number" name="price_min" placeholder="₱0" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Price (Max)</label>
+                    <input type="number" name="price_max" placeholder="₱0" class="form-input">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="form-submit">Check Availability</button>
+                </div>
+            </div>
         </form>
     </div>
 </section>
 
-<section class="aboutus-area">
+<section class="about-section">
     <div class="container">
-        <h2>About Us</h2>
-        <div class="aboutus-flex">
-
-            <div class="aboutus-tabs-area">
-                <ul class="aboutus-tabs">
-                    <li class="tab active" data-content="company">About Company</li>
-                    <li class="tab" data-content="terms">Terms & Condition</li>
-                    <li class="tab" data-content="specialty">Our Specialty</li>
-                    <li class="tab" data-content="services">Our Services</li>
+        <div class="section-header">
+            <h2 class="section-title">About Us</h2>
+        </div>
+        <div class="about-container">
+            <div class="tabs-wrapper">
+                <ul class="tabs-list">
+                    <li class="tab-item active" data-content="company">About Company</li>
+                    <li class="tab-item" data-content="terms">Terms & Condition</li>
+                    <li class="tab-item" data-content="specialty">Our Specialty</li>
+                    <li class="tab-item" data-content="services">Our Services</li>
                 </ul>
             </div>
-
-            <div class="aboutus-description">
-                <div id="company" class="content active">
-                    <p>We provide clean, safe, and comfortable rooms for families, students, and professionals. Enjoy a
-                        homely environment with friendly staff.</p>
+            <div class="content-wrapper">
+                <div id="company" class="content-panel active">
+                    <p class="content-text">We provide clean, safe, and comfortable rooms for families, students, and professionals. Enjoy a homely environment with friendly staff.</p>
                 </div>
-                <div id="terms" class="content">
-                    <p>All bookings are subject to our terms and conditions. Please read carefully before making a
-                        reservation.</p>
+                <div id="terms" class="content-panel">
+                    <p class="content-text">All bookings are subject to our terms and conditions. Please read carefully before making a reservation.</p>
                 </div>
-                <div id="specialty" class="content">
-                    <p>Our specialty includes affordable pricing, 24/7 security, fully furnished rooms, and fast Wi-Fi
-                        access.</p>
+                <div id="specialty" class="content-panel">
+                    <p class="content-text">Our specialty includes affordable pricing, 24/7 security, fully furnished rooms, and fast Wi-Fi access.</p>
                 </div>
-                <div id="services" class="content">
-                    <p>We offer additional services such as laundry, housekeeping, and guided local tours for our
-                        tenants.</p>
+                <div id="services" class="content-panel">
+                    <p class="content-text">We offer additional services such as laundry, housekeeping, and guided local tours for our tenants.</p>
                 </div>
             </div>
-
         </div>
     </div>
 </section>
 
-<section class="fun-facts">
+<section class="facts-section">
     <div class="container">
         <div class="facts-grid">
-            <div class="fact">
-                <h3>120+</h3>
-                <p>Happy Tenants</p>
+            <div class="fact-card">
+                <h3 class="fact-number">120+</h3>
+                <p class="fact-label">Happy Tenants</p>
             </div>
-            <div class="fact">
-                <h3>50+</h3>
-                <p>Rooms Available</p>
+            <div class="fact-card">
+                <h3 class="fact-number">50+</h3>
+                <p class="fact-label">Rooms Available</p>
             </div>
-            <div class="fact">
-                <h3>5</h3>
-                <p>Years of Service</p>
+            <div class="fact-card">
+                <h3 class="fact-number">5</h3>
+                <p class="fact-label">Years of Service</p>
             </div>
-            <div class="fact">
-                <h3>24/7</h3>
-                <p>Security</p>
+            <div class="fact-card">
+                <h3 class="fact-number">24/7</h3>
+                <p class="fact-label">Security</p>
             </div>
         </div>
     </div>
 </section>
 
-<section class="contact-area">
+<section class="contact-section">
     <div class="container">
-        <div class="contact-flex">
-            <div class="contact-map">
+        <div class="contact-grid">
+            <div class="map-container">
                 <iframe
                     src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3924.961485051478!2d123.9399084!3d10.3449648!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a9998802cdc303%3A0x922391774c67c57d!2sVillagracia%20Boarding%20House!5e0!3m2!1sen!2sph!4v1759588140943!5m2!1sen!2sph"
-                    width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    allowfullscreen="" loading="lazy"></iframe>
             </div>
-            <div class="contact-info">
-                <h4>Contact Info</h4>
-                <p>
-                    <span class="contact-info-icon"><i class="fas fa-map-marker-alt"></i>
-                </span>
-                    Almers Compound, Tabok, Mandaue City
-                </p>
-                <p>
-                    <span class="contact-info-icon"><i class="fas fa-envelope"></i>
-                </span>
-                    villagracia@gmail.com
-                </p>
-                <p>
-                    <span class="contact-info-icon"><i class="fas fa-phone"></i>
-                </span>
-                    +63 930 913 2995
-                </p>
+            <div class="contact-card">
+                <h4 class="contact-title">Contact Info</h4>
+                <div class="contact-item">
+                    <span class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </span>
+                    <span>Almers Compound, Tabok, Mandaue City</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </span>
+                    <span>villagracia@gmail.com</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </span>
+                    <span>+63 930 913 2995</span>
+                </div>
             </div>
         </div>
     </div>
@@ -802,8 +756,8 @@ body::before {
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const tabs = document.querySelectorAll('.aboutus-tabs .tab');
-        const contents = document.querySelectorAll('.aboutus-description .content');
+        const tabs = document.querySelectorAll('.tab-item');
+        const contents = document.querySelectorAll('.content-panel');
 
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
