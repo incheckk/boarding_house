@@ -189,6 +189,19 @@ CREATE TABLE churned_tenants (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE event_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    room_id INT NOT NULL,
+    event_type ENUM('view', 'reserve', 'inquiry', 'favorite') NOT NULL,
+    user_ip VARCHAR(45) NULL,                    -- Supports IPv4 & IPv6
+    user_agent TEXT NULL,
+    session_id VARCHAR(255) NULL,                -- Optional: track same user across pages
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    
+    INDEX idx_room_event (room_id, event_type),
+    INDEX idx_date (created_at),
+    INDEX idx_type (event_type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 -- small indexes for performance
 CREATE INDEX idx_room_status ON room(rstat_id);
 CREATE INDEX idx_tenant_status ON tenant(tstat_id);
