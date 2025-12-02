@@ -111,32 +111,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             z-index: 2;
         }
 
-        /* Breadcrumb */
-        .breadcrumb {
-            padding: 20px 20px; /* Keep padding */
-            background: rgba(248, 249, 250, 0.8);
-            position: relative;
-            z-index: 1;
-            /* --- MODIFIED FOR LEFT ALIGNMENT --- */
-            text-align: left; /* Aligns content to the left */
-            margin: 0 auto; /* Centers the container */
-            /* ------------------------------------ */
+        /* Updated Breadcrumbs to match Reservation and About pages */
+        .breadcrumbs-area {
+            background: #ffffff;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
         }
 
-        .breadcrumb a {
-            color: #c9a961;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
+        .breadcrumbs {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: #666;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
-        .breadcrumb a:hover {
+        .breadcrumbs a {
             color: #d4af37;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
         }
 
-        .breadcrumb span {
-            color: #9ca3af;
-            margin: 0 8px;
+        .breadcrumbs a:hover {
+            color: #c9a961;
+        }
+
+        .breadcrumbs .separator {
+            color: #e0e0e0;
+            font-weight: 300;
+        }
+
+        .breadcrumbs .last-item {
+            color: #2d2d2d;
+            font-weight: 500;
         }
 
         /* Map Section */
@@ -412,6 +424,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             .contact-title {
                 font-size: 2rem;
             }
+
+            .breadcrumbs {
+                font-size: 0.85rem;
+            }
         }
 
         @media (max-width: 640px) {
@@ -440,10 +456,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p>Contact with us</p>
     </section>
 
-    <div class="breadcrumb">
-        <a href="index.php">Home</a>
-        <span>›</span>
-        <span>Contact us</span>
+    <!-- Updated Breadcrumbs to match Reservation and About pages -->
+    <div class="breadcrumbs-area">
+        <div class="breadcrumbs">
+            <span class="first-item"><a href="index.php"><i class="fas fa-home"></i> Home</a></span>
+            <span class="separator">›</span>
+            <span class="last-item">Contact us</span>
+        </div>
     </div>
 
     <div class="map-section">

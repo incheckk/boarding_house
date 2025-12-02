@@ -327,7 +327,7 @@ body::before {
     font-weight: 600;
 }
 
-/* ====== CONTROLS ====== */
+/* ====== CONTROLS - IMPROVED ====== */
 .controls {
     background: var(--white);
     padding: 25px 30px;
@@ -344,10 +344,24 @@ body::before {
     flex-wrap: wrap;
 }
 
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 .controls label {
     font-weight: 600;
     color: var(--text-dark);
     font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.controls label i {
+    color: var(--primary-gold);
 }
 
 .controls select {
@@ -360,6 +374,7 @@ body::before {
     cursor: pointer;
     transition: var(--transition);
     font-family: inherit;
+    min-width: 150px;
 }
 
 .controls select:focus {
@@ -653,8 +668,19 @@ body::before {
         align-items: stretch;
     }
     
+    .control-group {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .controls select {
+        width: 100%;
+    }
+    
     .controls label {
-        margin-bottom: 5px;
+        margin-bottom: 0;
     }
     
     .room-actions {
@@ -730,24 +756,44 @@ body::before {
     <div class="controls">
         <form id="nonAjaxControls" method="get" action="rooms.php">
             <!-- Preserve existing filters -->
-            <input type="hidden" name="type" value="<?= htmlspecialchars($type ?? '') ?>">
-            <input type="hidden" name="price_min" value="<?= htmlspecialchars($priceMin ?? '') ?>">
-            <input type="hidden" name="price_max" value="<?= htmlspecialchars($priceMax ?? '') ?>">
-            <input type="hidden" name="available" value="<?= isset($_GET['available']) ? '1' : '' ?>">
+            <?php if (!empty($type)): ?>
+                <input type="hidden" name="type" value="<?= htmlspecialchars($type) ?>">
+            <?php endif; ?>
+            
+            <?php if (!is_null($priceMin)): ?>
+                <input type="hidden" name="price_min" value="<?= htmlspecialchars($priceMin) ?>">
+            <?php endif; ?>
+            
+            <?php if (!is_null($priceMax)): ?>
+                <input type="hidden" name="price_max" value="<?= htmlspecialchars($priceMax) ?>">
+            <?php endif; ?>
+            
+            <?php if ($availableOnly): ?>
+                <input type="hidden" name="available" value="1">
+            <?php endif; ?>
 
-            <label for="sortSelect"><i class="fas fa-sort"></i> Sort By:</label>
-            <select id="sortSelect" name="sort" onchange="this.form.submit()">
-                <option value="">Default</option>
-                <option value="price_asc" <?= $sort == 'price_asc' ? 'selected' : '' ?>>Price: Low → High</option>
-                <option value="price_desc" <?= $sort == 'price_desc' ? 'selected' : '' ?>>Price: High → Low</option>
-            </select>
+            <div class="control-group">
+                <label for="sortSelect">
+                    <i class="fas fa-sort"></i> Sort By:
+                </label>
+                <select id="sortSelect" name="sort" onchange="this.form.submit()">
+                    <option value="">Default (Room Number)</option>
+                    <option value="price_asc" <?= $sort == 'price_asc' ? 'selected' : '' ?>>Price: Low → High</option>
+                    <option value="price_desc" <?= $sort == 'price_desc' ? 'selected' : '' ?>>Price: High → Low</option>
+                </select>
+            </div>
 
-            <label for="perPage"><i class="fas fa-th"></i> Show:</label>
-            <select id="perPage" name="per_page" onchange="this.form.submit()">
-                <option value="6" <?= $per_page==6?'selected':'' ?>>6 Rooms</option>
-                <option value="9" <?= $per_page==9?'selected':'' ?>>9 Rooms</option>
-                <option value="12" <?= $per_page==12?'selected':'' ?>>12 Rooms</option>
-            </select>
+            <div class="control-group">
+                <label for="perPage">
+                    <i class="fas fa-th"></i> Show:
+                </label>
+                <select id="perPage" name="per_page" onchange="this.form.submit()">
+                    <option value="6" <?= $per_page==6?'selected':'' ?>>6 Rooms</option>
+                    <option value="9" <?= $per_page==9?'selected':'' ?>>9 Rooms</option>
+                    <option value="12" <?= $per_page==12?'selected':'' ?>>12 Rooms</option>
+                    <option value="18" <?= $per_page==18?'selected':'' ?>>18 Rooms</option>
+                </select>
+            </div>
         </form>
     </div>
 
