@@ -6,6 +6,14 @@ require_once __DIR__ . '/../includes/db.php';
 $id = $_GET['id'] ?? null;
 if (!$id) { echo "Room not found."; exit; }
 
+// NEW: Log the 'view' event (silent, no UI change)
+$user_ip = $_SERVER['REMOTE_ADDR'];
+$log_stmt = $pdo->prepare("
+    INSERT INTO event_logs (event_type, room_id, user_ip)
+    VALUES ('view', ?, ?)
+");
+$log_stmt->execute([$id, $user_ip]);
+
 $stmt = $pdo->prepare("
     SELECT r.*, rs.rstat_desc,
     GROUP_CONCAT(a.amen_name SEPARATOR ', ') AS amenities
