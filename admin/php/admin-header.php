@@ -31,7 +31,7 @@ require_once __DIR__ . '/../../includes/functions.php';
 
     <div class="admin-actions">
         <!-- Fixed logout path: Assuming logout.php is in root (/), this goes up one level from /admin/ -->
-        <a href="../logout.php" class="logout-btn">
+        <a href="php/logout.php" class="logout-btn">
             <i class="fas fa-sign-out-alt"></i> Logout
         </a>
     </div>
