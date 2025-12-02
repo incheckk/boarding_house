@@ -82,6 +82,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $pdo->prepare("UPDATE room SET rstat_id = 3 WHERE room_id = ?");
                 $stmt->execute([$room_id]);
 
+                // NEW: Log the 'reserve' event (silent, no UI change)
+                $user_ip = $_SERVER['REMOTE_ADDR'];  // Anonymous IP for tracking
+                $log_stmt = $pdo->prepare("
+                    INSERT INTO event_logs (event_type, room_id, user_ip)
+                    VALUES ('reserve', ?, ?)
+                ");
+                $log_stmt->execute([$room_id, $user_ip]);
+
                 // Redirect to prevent form resubmission (PRG pattern)
                 header("Location: reservation.php?success=1");
                 exit;
