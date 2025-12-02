@@ -628,7 +628,7 @@ body::before {
 <section class="hero">
     <div class="hero-content">
         <h1 class="hero-title">Welcome to CASA VILLAGRACIA</h1>
-        <p class="hero-description">Comfortable, safe, and affordable rooms.</p>
+        <p class="hero-description">Comfortable, safe, and affordable rooms for everyone.</p>
         <a href="rooms.php" class="hero-btn">View Rooms</a>
     </div>
 </section>

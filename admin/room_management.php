@@ -2,9 +2,10 @@
 $pageTitle = "Room Management";
 require_once __DIR__ . '/php/admin-header.php';
 require_once __DIR__ . '/php/admin-sidebar.php';
-require_once __DIR__ . '/../includes/auth.php';  // Ensure admin is logged in
+require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/db.php';
-// Sync room statuses with active roomtenant records (fix inconsistency)
+
+// Sync room statuses with active roomtenant records
 $pdo->exec("
     UPDATE room r
     LEFT JOIN (
@@ -14,18 +15,19 @@ $pdo->exec("
         GROUP BY room_id
     ) rt ON r.room_id = rt.room_id
     SET r.rstat_id = CASE 
-        WHEN rt.active_tenants > 0 THEN 2  -- Occupied
-        WHEN r.rstat_id = 3 THEN 3  -- Preserve Reserved if no tenant but reserved
-        ELSE 1  -- Available
+        WHEN rt.active_tenants > 0 THEN 2
+        WHEN r.rstat_id = 3 THEN 3
+        ELSE 1
     END
 ");
+
 $message = "";
 $editRoom = null;
 
-// Handle form submission (Add or Update)
+// Handle form submission (Add/Update Room)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $room_number = trim($_POST['room_number']);
-    $room_size = $_POST['room_size'];  // Dropdown: Single Bed, Double Bed, Bunk Bed
+    $room_size = $_POST['room_size'];
     $room_rate = floatval($_POST['room_rate']);
 
     if (empty($room_number) || empty($room_size) || $room_rate <= 0) {
@@ -33,17 +35,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         try {
             if (isset($_POST['update_room_id'])) {
-                // Update existing room
                 $room_id = intval($_POST['update_room_id']);
                 $stmt = $pdo->prepare("UPDATE room SET room_number = ?, room_size = ?, room_rate = ? WHERE room_id = ?");
                 $stmt->execute([$room_number, $room_size, $room_rate, $room_id]);
                 $message = "Room updated successfully!";
             } else {
-                // Add new room
                 $stmt = $pdo->prepare("INSERT INTO room (room_number, room_size, room_rate, rstat_id) VALUES (?, ?, ?, 1)");
                 $stmt->execute([$room_number, $room_size, $room_rate]);
                 $message = "Room added successfully!";
-                preventResubmission();
             }
         } catch (PDOException $e) {
             $message = "Database error: " . $e->getMessage();
@@ -63,7 +62,7 @@ if (isset($_GET['delete_room'])) {
     }
 }
 
-// Handle edit (populate form)
+// Handle edit
 if (isset($_GET['edit_room'])) {
     $room_id = intval($_GET['edit_room']);
     $stmt = $pdo->prepare("SELECT room_id, room_number, room_size, room_rate FROM room WHERE room_id = ?");
@@ -71,7 +70,7 @@ if (isset($_GET['edit_room'])) {
     $editRoom = $stmt->fetch();
 }
 
-// Fetch all rooms for table
+// Fetch all rooms
 $rooms = $pdo->query("
     SELECT r.room_id, r.room_number, r.room_size, r.room_rate, rs.rstat_desc AS status
     FROM room r
@@ -94,7 +93,7 @@ $vacantRooms = $stats['vacant_rooms'];
 $occupancyRate = $totalRooms > 0 ? round(($occupiedRooms / $totalRooms) * 100, 1) : 0;
 $avgRentRate = $stats['avg_rent_rate'];
 
-// Fetch room status with tenant info (one per room)
+// Fetch room statuses with tenant info
 $roomStatuses = $pdo->query("
     SELECT r.room_number, rs.rstat_desc AS status, 
            COALESCE(CONCAT(t.first_name, ' ', t.last_name), '-') AS tenant_name
@@ -107,20 +106,15 @@ $roomStatuses = $pdo->query("
 ?>
 
 <main class="main-content">
-    <!-- Page Header -->
     <div class="page-header">
         <h1>Room Management</h1>
         <p>Manage room details and monitor availability status.</p>
     </div>
 
-    <!-- Success/Error Message -->
     <?php if ($message): ?>
-        <div style="background: #d4edda; color: #155724; padding: 10px; margin-bottom: 20px; border: 1px solid #c3e6cb;">
-            <?php echo htmlspecialchars($message); ?>
-        </div>
+        <div class="message-box"><?php echo htmlspecialchars($message); ?></div>
     <?php endif; ?>
 
-    <!-- Manage Room Details Section -->
     <div class="dashboard-section">
         <div class="section-header">
             <h2>Manage Room Details</h2>
@@ -130,7 +124,8 @@ $roomStatuses = $pdo->query("
             <div class="form-grid">
                 <div class="form-group">
                     <label for="room-number">Room Number</label>
-                    <input type="text" id="room-number" name="room_number" placeholder="e.g., 101" value="<?php echo htmlspecialchars($editRoom['room_number'] ?? ''); ?>" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
+                    <input type="text" id="room-number" name="room_number" placeholder="e.g., 101"
+                        value="<?php echo htmlspecialchars($editRoom['room_number'] ?? ''); ?>" required>
                 </div>
 
                 <div class="form-group">
@@ -145,7 +140,9 @@ $roomStatuses = $pdo->query("
 
                 <div class="form-group">
                     <label for="rent-rate">Rent Rate (₱/month)</label>
-                    <input type="number" id="rent-rate" name="room_rate" placeholder="e.g., 5000" value="<?php echo htmlspecialchars($editRoom['room_rate'] ?? ''); ?>" min="0" step="0.01" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required>
+                    <input type="number" id="rent-rate" name="room_rate" placeholder="e.g., 5000"
+                        value="<?php echo htmlspecialchars($editRoom['room_rate'] ?? ''); ?>" min="0" step="0.01"
+                        required>
                 </div>
             </div>
 
@@ -176,8 +173,11 @@ $roomStatuses = $pdo->query("
                         <td><?php echo htmlspecialchars($room['room_size']); ?></td>
                         <td><?php echo htmlspecialchars($room['room_rate']); ?></td>
                         <td>
-                            <a href="?edit_room=<?php echo $room['room_id']; ?>" class="btn-action"><i class="fas fa-edit"></i></a>
-                            <a href="?delete_room=<?php echo $room['room_id']; ?>" class="btn-action warning" onclick="return confirm('Are you sure you want to delete this room?');"><i class="fas fa-trash"></i></a>
+                            <a href="?edit_room=<?php echo $room['room_id']; ?>" class="btn-action"><i
+                                    class="fas fa-edit"></i></a>
+                            <a href="?delete_room=<?php echo $room['room_id']; ?>" class="btn-action warning"
+                                onclick="return confirm('Are you sure you want to delete this room?');"><i
+                                    class="fas fa-trash"></i></a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -185,7 +185,6 @@ $roomStatuses = $pdo->query("
         </table>
     </div>
 
-    <!-- Room Availability Status Dashboard -->
     <div class="dashboard-section">
         <div class="section-header">
             <h2>Room Availability Status Dashboard</h2>
@@ -196,12 +195,10 @@ $roomStatuses = $pdo->query("
                 <h3>Total Rooms</h3>
                 <div class="number"><?php echo $totalRooms; ?></div>
             </div>
-
             <div class="occupancy-card">
                 <h3>Occupied Rooms</h3>
                 <div class="number"><?php echo $occupiedRooms; ?></div>
             </div>
-
             <div class="occupancy-card">
                 <h3>Vacant Rooms</h3>
                 <div class="number"><?php echo $vacantRooms; ?></div>
@@ -238,7 +235,9 @@ $roomStatuses = $pdo->query("
                 <?php foreach ($roomStatuses as $status): ?>
                     <tr>
                         <td><?php echo htmlspecialchars($status['room_number']); ?></td>
-                        <td><span class="status-badge <?php echo strtolower($status['status']); ?>"><?php echo htmlspecialchars($status['status']); ?></span></td>
+                        <td><span
+                                class="status-badge <?php echo strtolower($status['status']); ?>"><?php echo htmlspecialchars($status['status']); ?></span>
+                        </td>
                         <td><?php echo htmlspecialchars($status['tenant_name']); ?></td>
                     </tr>
                 <?php endforeach; ?>
@@ -246,6 +245,164 @@ $roomStatuses = $pdo->query("
         </table>
     </div>
 </main>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #f9f9f9;
+        color: #333;
+    }
+
+    .page-header {
+        margin-bottom: 30px;
+    }
+
+    .dashboard-section {
+        background: #fff;
+        padding: 30px;
+        margin-bottom: 30px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .section-header {
+        margin-bottom: 20px;
+    }
+
+    .section-header h2 {
+        font-size: 26px;
+        color: #1d1d1f;
+    }
+
+    .message-box {
+        background: #d4edda;
+        color: #155724;
+        padding: 12px;
+        margin-bottom: 20px;
+        border: 1px solid #c3e6cb;
+        border-radius: 8px;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+    }
+
+    .data-table tr:hover {
+        background: #f2f2f2;
+    }
+
+    .occupancy-grid {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .occupancy-card {
+        flex: 1;
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        text-align: center;
+    }
+
+    .stat-box {
+        background: #f5f5f7;
+        padding: 15px;
+        border-radius: 10px;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .btn-action {
+        padding: 10px 18px;
+        border: none;
+        border-radius: 8px;
+        color: #fff;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-action.primary {
+        background: #34c759;
+    }
+
+    .btn-action.primary:hover {
+        background: #28a745;
+    }
+
+    .btn-action.warning {
+        background: #ff3b30;
+    }
+
+    .btn-action.warning:hover {
+        background: #d63027;
+    }
+
+    .status-badge {
+        padding: 5px 12px;
+        border-radius: 15px;
+        font-weight: 600;
+        font-size: 13px;
+    }
+
+    .status-badge.available {
+        background: #d4f8d4;
+        color: #1b8a1b;
+    }
+
+    .status-badge.occupied {
+        background: #ffe1e1;
+        color: #d11a1a;
+    }
+
+    .status-badge.reserved {
+        background: #fff4c2;
+        color: #b88a00;
+    }
+
+    .form-grid {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+
+    .form-actions {
+        margin-top: 15px;
+        display: flex;
+        gap: 10px;
+    }
+</style>
 
 <script>
     console.log("Room Management page loaded.");
