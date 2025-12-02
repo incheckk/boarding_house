@@ -98,29 +98,44 @@ $profile_image = "malupiton.jpg"
             z-index: 2;
         }
 
-        .breadcrumb {
-            padding: 20px;
-            background: rgba(248, 249, 250, 0.8);
-            position: relative;
-            z-index: 1;
-            text-align: left;
-            /* aligned to the left */
+        /* Updated Breadcrumbs to match Reservation page */
+        .breadcrumbs-area {
+            background: #ffffff;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
         }
 
-        .breadcrumb a {
-            color: #c9a961;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
+        .breadcrumbs {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: #666;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
-        .breadcrumb a:hover {
+        .breadcrumbs a {
             color: #d4af37;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
         }
 
-        .breadcrumb span {
-            color: #9ca3af;
-            margin: 0 8px;
+        .breadcrumbs a:hover {
+            color: #c9a961;
+        }
+
+        .breadcrumbs .separator {
+            color: #e0e0e0;
+            font-weight: 300;
+        }
+
+        .breadcrumbs .last-item {
+            color: #2d2d2d;
+            font-weight: 500;
         }
 
         .why-choose {
@@ -420,6 +435,10 @@ $profile_image = "malupiton.jpg"
             .why-choose h2 {
                 font-size: 2.2rem;
             }
+
+            .breadcrumbs {
+                font-size: 0.85rem;
+            }
         }
     </style>
 </head>
@@ -428,14 +447,16 @@ $profile_image = "malupiton.jpg"
     <!-- About Hero Section -->
     <section class="about-hero">
         <h1>About</h1>
-            <p>About our company</p>
+        <p>About our company</p>
     </section>
 
-    <!-- Breadcrumb -->
-    <div class="breadcrumb">
-        <a href="index.php">Home</a>
-        <span>›</span>
-        <span>About</span>
+    <!-- Breadcrumb - Updated to match Reservation page -->
+    <div class="breadcrumbs-area">
+        <div class="breadcrumbs">
+            <span class="first-item"><a href="index.php"><i class="fas fa-home"></i> Home</a></span>
+            <span class="separator">›</span>
+            <span class="last-item">About</span>
+        </div>
     </div>
 
     <!-- Why Choose Us Section -->
@@ -457,7 +478,7 @@ $profile_image = "malupiton.jpg"
                     to live. We make sure every part of your stay feels simple and convenient, from the cleanliness of
                     your room to the support you receive whenever you need help. You can settle in with confidence
                     knowing that the environment is safe, peaceful, and built to support your daily routine. Whether
-                    you’re a student, a worker, or someone looking for a calm place to call home, our boarding house is
+                    you're a student, a worker, or someone looking for a calm place to call home, our boarding house is
                     meant to give you a balanced life where comfort, security, and quality come together. Here, you can
                     relax, stay productive, and enjoy your life without the usual worries that come with finding a good
                     place to stay.
@@ -479,9 +500,7 @@ $profile_image = "malupiton.jpg"
             visits or uses the site can do so smoothly, safely, and without any problems or interruptions.
         </p>
         
-            </div>
-            <div class="signature">VILLAGRACIA</div>
-        </div>
+        <div class="signature">VILLAGRACIA</div>
     </section>
 
     <!-- Scroll to Top Button -->
