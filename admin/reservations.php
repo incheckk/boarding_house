@@ -227,63 +227,271 @@ if (isset($_GET['view_tenant'])) {
 }
 ?>
 
-<!-- Main Content Wrapper -->
+<!-- ===== Main Content Wrapper ===== -->
 <main class="main-content">
+    <style>
+        /* ===== General Reservation Styles ===== */
+        .main-content {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background: #f9f9f9;
+        }
+
+        .page-header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #1d1d1f;
+        }
+
+        .page-header p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-section {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .section-header h2 {
+            margin-bottom: 15px;
+            color: #1d1d1f;
+            font-size: 24px;
+        }
+
+        .section-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Form Grid */
+        .reservation-form .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .reservation-form .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .reservation-form .form-group label {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .reservation-form input,
+        .reservation-form select {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .data-table thead {
+            background: #f5f5f5;
+        }
+
+        .data-table tr:hover {
+            background: #fafafa;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .status-badge.pending {
+            background: rgba(255, 149, 0, 0.1);
+            color: #ff9500;
+        }
+
+        .status-badge.approved {
+            background: rgba(52, 199, 89, 0.1);
+            color: #34c759;
+        }
+
+        .status-badge.rejected {
+            background: rgba(255, 59, 48, 0.1);
+            color: #ff3b30;
+        }
+
+        /* Buttons */
+        .btn-action {
+            padding: 6px 10px;
+            font-size: 13px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #007aff;
+            color: #fff;
+        }
+
+        .btn-action.warning {
+            background: #ff3b30;
+        }
+
+        .btn-action i {
+            font-size: 12px;
+        }
+
+        .btn-action:hover {
+            opacity: 0.85;
+        }
+
+        /* Multiple Reservations */
+        .room-multiple-reservations {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background: #fafafa;
+        }
+
+        .room-multiple-reservations h4 {
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #1d1d1f;
+        }
+
+        .room-multiple-reservations p {
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .room-multiple-reservations ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .room-multiple-reservations li {
+            margin-bottom: 6px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-box {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-box h2 {
+            margin-top: 0;
+        }
+
+        .modal-close-btn {
+            background: #007aff;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .modal-close-btn:hover {
+            opacity: 0.85;
+        }
+
+        @media(max-width:768px) {
+            .reservation-form .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Confirm Reservation button */
+        .btn-action.confirm-reservation {
+            background: #28a745;
+            /* Green */
+            color: #fff;
+        }
+    </style>
+
     <!-- Page Header -->
     <div class="page-header">
         <h1>Reservations</h1>
         <p>Manage online bookings and waiting lists for your properties.</p>
     </div>
 
-    <!-- Success Message -->
     <?php if ($message): ?>
         <div style="background: #d4edda; color: #155724; padding: 10px; margin-bottom: 20px; border: 1px solid #c3e6cb;">
             <?php echo htmlspecialchars($message); ?>
         </div>
     <?php endif; ?>
 
-    <!-- Online Reservation System -->
+    <!-- Reservation Form Section -->
     <section class="dashboard-section">
         <div class="section-header">
             <h2>Online Reservation System</h2>
         </div>
-
-        <!-- Reservation Form (Admin Manual) - Updated to Match User-Side Form with Previous Grid Design -->
         <div class="reservation-form">
-            <h3>Make a Reservation (Admin)</h3>
-            <form method="POST" action="" class="reservation-form">  <!-- FIXED: Posts to self -->
+            <form method="POST" action="">
                 <div class="form-grid">
-                    <div class="form-group">
-                        <label for="fname">First Name</label>
-                        <input type="text" id="fname" name="fname" required>
+                    <div class="form-group"><label>First Name</label><input type="text" name="fname" required></div>
+                    <div class="form-group"><label>Last Name</label><input type="text" name="lname" required></div>
+                    <div class="form-group"><label>Middle Name (Optional)</label><input type="text" name="mname"></div>
+                    <div class="form-group"><label>Contact Number</label><input type="text" name="number" required>
                     </div>
-                    <div class="form-group">
-                        <label for="lname">Last Name</label>
-                        <input type="text" id="lname" name="lname" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="mname">Middle Name (Optional)</label>
-                        <input type="text" id="mname" name="mname">
-                    </div>
-                    <div class="form-group">
-                        <label for="number">Contact Number</label>
-                        <input type="text" id="number" name="number" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="emer_contact">Emergency Contact Number</label>
-                        <input type="text" id="emer_contact" name="emer_contact" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="room_id">Select Room</label>
-                        <select id="room_id" name="room_id" required>
+                    <div class="form-group"><label>Emergency Contact Number</label><input type="text"
+                            name="emer_contact" required></div>
+                    <div class="form-group"><label>Email Address</label><input type="email" name="email" required></div>
+                    <div class="form-group"><label>Select Room</label>
+                        <select name="room_id" required>
                             <option value="">Choose...</option>
                             <?php foreach ($availableRooms as $r): ?>
                                 <option value="<?php echo $r['room_id']; ?>">
-                                    Room <?php echo htmlspecialchars($r['room_number']); ?> (<?php echo htmlspecialchars($r['status']); ?>)
+                                    Room <?php echo htmlspecialchars($r['room_number']); ?>
+                                    (<?php echo htmlspecialchars($r['status']); ?>)
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -296,12 +504,11 @@ if (isset($_GET['view_tenant'])) {
         </div>
     </section>
 
-    <!-- Waiting List Management -->
+    <!-- Waiting List Table -->
     <section class="dashboard-section">
         <div class="section-header">
             <h2>Waiting List Management</h2>
         </div>
-
         <table class="data-table">
             <thead>
                 <tr>
@@ -318,18 +525,19 @@ if (isset($_GET['view_tenant'])) {
                         <td><?php echo htmlspecialchars($res['first_name'] . ' ' . $res['last_name']); ?></td>
                         <td><?php echo htmlspecialchars($res['email']); ?></td>
                         <td>Room <?php echo htmlspecialchars($res['room_number']); ?></td>
-                        <td><span class="status-badge <?php echo strtolower($res['restat_desc']); ?>"><?php echo htmlspecialchars($res['restat_desc']); ?></span></td>
+                        <td><span
+                                class="status-badge <?php echo strtolower($res['restat_desc']); ?>"><?php echo htmlspecialchars($res['restat_desc']); ?></span>
+                        </td>
                         <td>
-                            <a href="?view_tenant=<?php echo $res['tenant_id']; ?>" class="btn-action" title="View"><i class="fas fa-eye"></i></a>
+                            <a href="?view_tenant=<?php echo $res['tenant_id']; ?>" class="btn-action" title="View"><i
+                                    class="fas fa-eye"></i></a>
                             <?php if ($res['restat_desc'] === 'Pending'): ?>
-                                <form method="POST" style="display:inline;">
-                                    <input type="hidden" name="reservation_id" value="<?php echo $res['reservation_id']; ?>">
-                                    <button type="submit" name="action" value="approve" class="btn-action">Approve</button>
-                                </form>
-                                <form method="POST" style="display:inline;">
-                                    <input type="hidden" name="reservation_id" value="<?php echo $res['reservation_id']; ?>">
-                                    <button type="submit" name="action" value="reject" class="btn-action warning">Reject</button>
-                                </form>
+                                <form method="POST" style="display:inline;"><input type="hidden" name="reservation_id"
+                                        value="<?php echo $res['reservation_id']; ?>"><button type="submit" name="action"
+                                        value="approve" class="btn-action">Approve</button></form>
+                                <form method="POST" style="display:inline;"><input type="hidden" name="reservation_id"
+                                        value="<?php echo $res['reservation_id']; ?>"><button type="submit" name="action"
+                                        value="reject" class="btn-action warning">Reject</button></form>
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -344,17 +552,19 @@ if (isset($_GET['view_tenant'])) {
             <h2>Rooms with Multiple Reservations</h2>
             <p>Review rooms with more than one pending reservation to choose the most compatible.</p>
         </div>
-
         <?php if (!empty($roomsWithMultipleReservations)): ?>
             <?php foreach ($roomsWithMultipleReservations as $room): ?>
-                <div class="room-multiple-reservations" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px;">
-                    <h4>Room <?php echo htmlspecialchars($room['room_number']); ?> (<?php echo htmlspecialchars($room['room_size']); ?>) - ₱<?php echo htmlspecialchars($room['room_rate']); ?>/month</h4>
+                <div class="room-multiple-reservations">
+                    <h4>Room <?php echo htmlspecialchars($room['room_number']); ?>
+                        (<?php echo htmlspecialchars($room['room_size']); ?>) -
+                        ₱<?php echo htmlspecialchars($room['room_rate']); ?>/month</h4>
                     <p><strong>Pending Reservations:</strong> <?php echo $room['reservation_count']; ?></p>
                     <ul>
                         <?php foreach ($multipleReservationsDetails[$room['room_id']] as $resDetail): ?>
                             <li>
                                 <?php echo htmlspecialchars($resDetail['first_name'] . ' ' . $resDetail['last_name']); ?>
-                                <a href="?view_tenant=<?php echo $resDetail['tenant_id']; ?>" class="btn-action" style="margin-left: 10px;" title="View"><i class="fas fa-eye"></i></a>
+                                <a href="?view_tenant=<?php echo $resDetail['tenant_id']; ?>" class="btn-action" title="View"><i
+                                        class="fas fa-eye"></i></a>
                             </li>
                         <?php endforeach; ?>
                     </ul>
@@ -365,23 +575,25 @@ if (isset($_GET['view_tenant'])) {
         <?php endif; ?>
     </section>
 
-    <!-- Tenant Details Modal -->
+    <!-- Tenant Modal -->
     <?php if ($selectedTenant): ?>
-    <div id="tenantModal" class="modal-overlay show" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
-        <div class="modal-box" style="background: white; padding: 20px; border-radius: 8px; max-width: 500px; width: 90%;">
-            <h2>Tenant Details</h2>
-            <p><strong>Full Name:</strong> <?php echo htmlspecialchars($selectedTenant['first_name'] . ' ' . $selectedTenant['middle_name'] . ' ' . $selectedTenant['last_name']); ?></p>
-            <p><strong>Email:</strong> <?php echo htmlspecialchars($selectedTenant['email']); ?></p>
-            <p><strong>Contact Number:</strong> <?php echo htmlspecialchars($selectedTenant['number']); ?></p>
-            <p><strong>Emergency Contact:</strong> <?php echo htmlspecialchars($selectedTenant['emergency_number']); ?></p>
-            <p><strong>Status:</strong> <?php echo htmlspecialchars($selectedTenant['tenant_status']); ?></p>
-            <p><strong>Created At:</strong> <?php echo htmlspecialchars($selectedTenant['created_at']); ?></p>
-            <button onclick="window.location.href='reservations.php'" class="modal-close-btn" style="background: #007bff; color: white; border: none; padding: 10px; cursor: pointer;">Close</button>
+        <div class="modal-overlay show">
+            <div class="modal-box">
+                <h2>Tenant Details</h2>
+                <p><strong>Full Name:</strong>
+                    <?php echo htmlspecialchars($selectedTenant['first_name'] . ' ' . $selectedTenant['middle_name'] . ' ' . $selectedTenant['last_name']); ?>
+                </p>
+                <p><strong>Email:</strong> <?php echo htmlspecialchars($selectedTenant['email']); ?></p>
+                <p><strong>Contact Number:</strong> <?php echo htmlspecialchars($selectedTenant['number']); ?></p>
+                <p><strong>Emergency Contact:</strong> <?php echo htmlspecialchars($selectedTenant['emergency_number']); ?>
+                </p>
+                <p><strong>Status:</strong> <?php echo htmlspecialchars($selectedTenant['tenant_status']); ?></p>
+                <p><strong>Created At:</strong> <?php echo htmlspecialchars($selectedTenant['created_at']); ?></p>
+                <button onclick="window.location.href='reservations.php'" class="modal-close-btn">Close</button>
+            </div>
         </div>
-    </div>
     <?php endif; ?>
 </main>
+<button type="submit" class="btn-action confirm-reservation">Confirm Reservation</button>
 
-<script>
-    console.log("Reservations page loaded. Add JS for interactivity.");
-</script>
+<script>console.log("Reservations page loaded.");</script>

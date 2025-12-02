@@ -144,21 +144,36 @@ function render_rooms_grid($rooms)
     }
 
     echo '<div class="rooms-grid" id="roomsGrid">';
+
     foreach ($rooms as $room) {
-        $amen = $room['amenities'] ?: 'None';
+        $roomId = (int) $room['room_id'];
         $roomNumber = htmlspecialchars($room['room_number']);
         $roomSize = htmlspecialchars($room['room_size']);
         $roomRate = number_format($room['room_rate'], 2);
         $status = htmlspecialchars($room['rstat_desc']);
-        $roomId = (int) $room['room_id'];
+        $amen = $room['amenities'] ?: 'None';
+        $statusLower = strtolower($status);
 
         // Status class
-        $statusLower = strtolower($status);
         $statusClass = 'status-available';
         if (strpos($statusLower, 'occupied') !== false) {
             $statusClass = 'status-occupied';
         } elseif (strpos($statusLower, 'maintenance') !== false) {
             $statusClass = 'status-maintenance';
+        }
+
+        // Reserve button logic
+        if ($statusLower === 'occupied') {
+            $reserveBtn = '
+                <a class="btn-reserve disabled" href="#" 
+                    onclick="alert(\'Can’t reserve room because it’s occupied.\'); return false;">
+                    <i class="fas fa-calendar-times"></i> Reserve
+                </a>';
+        } else {
+            $reserveBtn = '
+                <a class="btn-reserve" href="reservation.php?room_id=' . $roomId . '">
+                    <i class="fas fa-calendar-check"></i> Reserve
+                </a>';
         }
 
         echo <<<HTML
@@ -187,16 +202,16 @@ function render_rooms_grid($rooms)
                     <a class="btn-details" href="room.php?id={$roomId}">
                         <i class="fas fa-info-circle"></i> View Details
                     </a>
-                    <a class="btn-reserve" href="reservation.php?room_id={$roomId}">
-                        <i class="fas fa-calendar-check"></i> Reserve
-                    </a>
+                    {$reserveBtn}
                 </div>
             </div>
         </div>
 HTML;
     }
-    echo '</div>'; // .rooms-grid
+
+    echo '</div>';
 }
+
 
 /* If AJAX request */
 if ($isAjax) {
@@ -573,6 +588,23 @@ function build_page_url($newPage)
         border-color: var(--accent-dark);
         transform: translateY(-2px);
     }
+
+    .btn-reserve.disabled {
+        background: #ccc;
+        border-color: #bbb;
+        color: #555;
+        cursor: not-allowed;
+        opacity: 0.7;
+        pointer-events: auto;
+        /* allow the alert to trigger */
+    }
+
+    .btn-reserve.disabled:hover {
+        background: #ccc;
+        border-color: #bbb;
+        transform: none;
+    }
+
 
     /* ====== NO RESULTS ====== */
     .no-results-container {

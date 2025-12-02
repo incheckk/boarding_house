@@ -103,6 +103,7 @@ $profile_image = "malupiton.jpg"
             background: #ffffff;
             padding: 20px 0;
             border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            margin-bottom: 60px;
         }
 
         .breadcrumbs {
@@ -141,7 +142,7 @@ $profile_image = "malupiton.jpg"
         .why-choose {
             padding: 80px 20px;
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 0 auto 80px;
             position: relative;
             background: linear-gradient(135deg, #ffffff 0%, #fdfbf7 100%);
             border-radius: 20px;
@@ -181,7 +182,7 @@ $profile_image = "malupiton.jpg"
         .why-choose-subtitle {
             text-align: center;
             color: #94a3b8;
-            margin-bottom: 60px;
+            margin-bottom: 20px;
             font-size: 1.1rem;
             position: relative;
             z-index: 1;
@@ -282,6 +283,7 @@ $profile_image = "malupiton.jpg"
         .profile-section {
             background: rgba(248, 249, 250, 0.8);
             padding: 80px 20px;
+            margin-top: 80px;
             text-align: center;
             position: relative;
             z-index: 1;
@@ -429,7 +431,7 @@ $profile_image = "malupiton.jpg"
             }
 
             .why-choose {
-                margin: 20px;
+                margin: 0 20px 60px;
             }
 
             .why-choose h2 {
@@ -438,6 +440,14 @@ $profile_image = "malupiton.jpg"
 
             .breadcrumbs {
                 font-size: 0.85rem;
+            }
+
+            .breadcrumbs-area {
+                margin-bottom: 40px;
+            }
+
+            .profile-section {
+                margin-top: 60px;
             }
         }
     </style>
