@@ -36,8 +36,6 @@ $pendingReservations = $pdo->query("SELECT COUNT(*) AS count FROM reservation WH
             <i class="fas fa-chart-bar"></i> Reports & Analytics</a>
         </li>
 
-         <li><a href="ai_dashboard.php" class="<?= basename($_SERVER['PHP_SELF']) == 'ai_dashboard.php' ? 'active' : '' ?>">
-            <i class="fas fa-chart-bar"></i> AI Dashboard</a>
-        </li>
+
     </ul>
 </aside>
