@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: 
+            background-image:
                 radial-gradient(circle, rgba(212, 175, 55, 0.08) 1px, transparent 1px),
                 radial-gradient(circle, rgba(218, 165, 32, 0.06) 1.5px, transparent 1.5px);
             background-size: 60px 60px, 100px 100px;
@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: 
+            background-image:
                 radial-gradient(circle, rgba(255, 255, 255, 0.3) 2px, transparent 2px),
                 radial-gradient(circle, rgba(255, 215, 0, 0.4) 1.5px, transparent 1.5px),
                 radial-gradient(circle, rgba(139, 69, 19, 0.2) 1px, transparent 1px);
@@ -84,10 +84,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         @keyframes shimmer {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
                 transform: translateY(0);
             }
+
             50% {
                 opacity: 0.7;
                 transform: translateY(-10px);
@@ -269,7 +272,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             justify-content: center;
             color: #000000;
             font-size: 18px;
-            box-shadow: 
+            box-shadow:
                 0 4px 15px rgba(212, 175, 55, 0.3),
                 inset 0 -2px 5px rgba(139, 101, 8, 0.3),
                 inset 0 2px 5px rgba(255, 248, 220, 0.6);
@@ -299,7 +302,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #000000;
             text-decoration: none;
             transition: all 0.3s ease;
-            box-shadow: 
+            box-shadow:
                 0 4px 15px rgba(212, 175, 55, 0.3),
                 inset 0 -2px 5px rgba(139, 101, 8, 0.3),
                 inset 0 2px 5px rgba(255, 248, 220, 0.6);
@@ -308,10 +311,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         .social-icons a:hover {
             transform: rotate(360deg) scale(1.1);
-            box-shadow: 
+            box-shadow:
                 0 6px 20px rgba(212, 175, 55, 0.5),
                 inset 0 -2px 5px rgba(139, 101, 8, 0.4),
                 inset 0 2px 8px rgba(255, 248, 220, 0.8);
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #d4af37 0%, #c9a961 100%);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+            transition: all 0.3s;
+            z-index: 100;
+            color: white;
+        }
+
+        .scroll-top:hover {
+            background: linear-gradient(135deg, #c9a961 0%, #b8941f 100%);
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
         }
 
         /* Contact Form */
@@ -342,10 +370,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .form-header h3 {
             font-size: 1.8rem;
             /* Remove the gradient and set color to black */
-            background: none; /* Remove background gradient */
-            -webkit-background-clip: unset; /* Reset background clip */
-            -webkit-text-fill-color: initial; /* Reset text fill color */
-            color: #000000; /* Set text color to black */
+            background: none;
+            /* Remove background gradient */
+            -webkit-background-clip: unset;
+            /* Reset background clip */
+            -webkit-text-fill-color: initial;
+            /* Reset text fill color */
+            color: #000000;
+            /* Set text color to black */
             font-weight: 700;
         }
 
@@ -483,7 +515,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="contact-container">
             <div class="contact-info">
-                
+
                 <div class="contact-info-item">
                     <h3><i class="fas fa-envelope"></i> Mail</h3>
                     <p>villagracia@gmail.com</p>
@@ -530,6 +562,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 </body>
+
 </html>
+ <!-- Scroll to Top Button -->
+    <div class="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fas fa-chevron-up"></i>
+    </div>
+</body>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
