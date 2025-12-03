@@ -528,13 +528,6 @@ body::before {
                     </li>
                     <li class="detail-item">
                         <span class="detail-label">
-                            <i class="fas fa-ruler-combined"></i>
-                            Room Size
-                        </span>
-                        <span class="detail-value"><?= htmlspecialchars($room['room_size']) ?></span>
-                    </li>
-                    <li class="detail-item">
-                        <span class="detail-label">
                             <i class="fas fa-bed"></i>
                             Bed Type
                         </span>
