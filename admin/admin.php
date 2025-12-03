@@ -10,6 +10,7 @@ require_once __DIR__ . '/php/admin-sidebar.php';
 require_once __DIR__ . '/../includes/auth.php';  // Ensure admin is logged in
 require_once __DIR__ . '/../includes/db.php';
 
+
 // Fetch statistics
 $totalRooms = $pdo->query("SELECT COUNT(*) AS count FROM room")->fetch()['count'];
 $activeTenants = $pdo->query("SELECT COUNT(*) AS count FROM tenant WHERE tstat_id = 2")->fetch()['count'];

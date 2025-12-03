@@ -3,15 +3,6 @@ $pageTitle = "Rooms";
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/header.php';
 
-/*
-  rooms.php
-  - Filters: type (single|double|bunk), price_min, price_max
-  - Sorting: sort=price_asc|price_desc
-  - Availability: available=1 (only rooms where rs.rstat_desc = 'Vacant')
-  - Pagination: page (default 1), per_page (default 9)
-  - AJAX: if ajax=1 return only the rooms-grid html fragment
-*/
-
 /* -------------------------
    Helper: map incoming type -> DB value
    ------------------------- */
@@ -158,6 +149,8 @@ function render_rooms_grid($rooms)
         $statusClass = 'status-available';
         if (strpos($statusLower, 'occupied') !== false) {
             $statusClass = 'status-occupied';
+        } elseif (strpos($statusLower, 'reserved') !== false) {
+            $statusClass = 'status-reserved';
         } elseif (strpos($statusLower, 'maintenance') !== false) {
             $statusClass = 'status-maintenance';
         }
@@ -166,7 +159,7 @@ function render_rooms_grid($rooms)
         if ($statusLower === 'occupied') {
             $reserveBtn = '
                 <a class="btn-reserve disabled" href="#" 
-                    onclick="alert(\'Can’t reserve room because it’s occupied.\'); return false;">
+                    onclick="alert(\'Can\'t reserve room because it\'s occupied.\'); return false;">
                     <i class="fas fa-calendar-times"></i> Reserve
                 </a>';
         } else {
@@ -471,6 +464,11 @@ function build_page_url($newPage)
         color: #5f2d2d;
     }
 
+    .status-reserved {
+        background: linear-gradient(135deg, #fff4cc 0%, #ffeb99 100%);
+        color: #6b5a00;
+    }
+
     .status-maintenance {
         background: linear-gradient(135deg, #f4e5c0 0%, #d4af37 100%);
         color: #5f4d2d;
@@ -596,7 +594,6 @@ function build_page_url($newPage)
         cursor: not-allowed;
         opacity: 0.7;
         pointer-events: auto;
-        /* allow the alert to trigger */
     }
 
     .btn-reserve.disabled:hover {
@@ -604,7 +601,6 @@ function build_page_url($newPage)
         border-color: #bbb;
         transform: none;
     }
-
 
     /* ====== NO RESULTS ====== */
     .no-results-container {
