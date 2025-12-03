@@ -17,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['password_hash'])) {
-            // Success! Set session
             $_SESSION['admin_logged_in'] = true;
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['username'] = $user['username'];
@@ -38,7 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 } else {
-    // Direct access
     header('Location: ../login.php');
     exit();
 }
