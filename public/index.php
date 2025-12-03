@@ -1,6 +1,11 @@
 <?php
 $pageTitle = "Home";
 require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/db.php';
+
+// Fetch dynamic counts
+$happyTenants = $pdo->query("SELECT COUNT(*) AS count FROM tenant WHERE tstat_id = 2")->fetch()['count'];
+$roomsAvailable = $pdo->query("SELECT COUNT(*) AS count FROM room WHERE rstat_id = 1 OR rstat_id = 3")->fetch()['count'];
 ?>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -256,6 +261,131 @@ body::before {
     gap: 30px;
     max-width: 1100px;
     margin: 0 auto;
+}
+
+.tabs-wrapper {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.tabs-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tab-item {
+    padding: 15px 20px;
+    cursor: pointer;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    color: #555;
+}
+
+.tab-item:hover {
+    background: #f0f0f0;
+}
+
+.tab-item.active {
+    background: #667eea;
+    color: white;
+}
+
+.content-wrapper {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    max-height: 500px; /* Set fixed height */
+    overflow: hidden;
+}
+
+.content-panel {
+    display: none;
+    max-height: 440px; /* Subtract padding from wrapper height */
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 15px;
+}
+
+.content-panel.active {
+    display: block;
+}
+
+/* Custom Scrollbar */
+.content-panel::-webkit-scrollbar {
+    width: 10px;
+}
+
+.content-panel::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.content-panel::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.content-panel::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Content Styling */
+.content-text {
+    line-height: 1.8;
+    color: #333;
+    font-size: 15px;
+}
+
+.content-text h2 {
+    font-size: 22px;
+    color: #667eea;
+    margin-bottom: 20px;
+    margin-top: 0;
+}
+
+.content-text h3 {
+    font-size: 16px;
+    color: #333;
+    margin-top: 25px;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.content-text p {
+    margin-bottom: 15px;
+    text-align: justify;
+}
+
+.content-text ul {
+    margin: 10px 0 20px 20px;
+    padding: 0;
+}
+
+.content-text li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .about-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .content-wrapper {
+        max-height: 400px;
+    }
+    
+    .content-panel {
+        max-height: 340px;
+    }
 }
 
 .tabs-wrapper {
@@ -674,7 +804,7 @@ body::before {
         <div class="about-container">
             <div class="tabs-wrapper">
                 <ul class="tabs-list">
-                    <li class="tab-item active" data-content="company">About Company</li>
+                    <li class="tab-item active" data-content="company">About Us</li>
                     <li class="tab-item" data-content="terms">Terms & Condition</li>
                     <li class="tab-item" data-content="specialty">Our Specialty</li>
                     <li class="tab-item" data-content="services">Our Services</li>
@@ -682,16 +812,156 @@ body::before {
             </div>
             <div class="content-wrapper">
                 <div id="company" class="content-panel active">
-                    <p class="content-text">We provide clean, safe, and comfortable rooms for families, students, and professionals. Enjoy a homely environment with friendly staff.</p>
+                    <div class="content-text">
+                        <p>Casa Villagracia Boarding House offers a safe, organized, and comfortable living environment for students, employees, and individuals seeking an affordable and convenient place to stay. Located in Almers, Tabok, Mandaue City, the boarding house is easily accessible to public transportation, nearby schools, commercial establishments, and essential services—making it an ideal home for residents who value comfort, accessibility, and a peaceful living setup.</p>
+                        
+                        <p>Established to provide secure, quality, and budget-friendly accommodation, Casa Villagracia is committed to maintaining a clean and peaceful environment supported by proper facility upkeep and a respectful community culture. To enhance tenant convenience, the boarding house integrates a modern digital management system that streamlines bookings, payments, tenant records, and maintenance requests.</p>
+                        
+                        <p>At Casa Villagracia, your comfort, safety, and well-being are our top priorities.</p>
+                    </div>
                 </div>
+                
                 <div id="terms" class="content-panel">
-                    <p class="content-text">All bookings are subject to our terms and conditions. Please read carefully before making a reservation.</p>
+                    <div class="content-text">
+                        <p>To ensure a safe, orderly, and harmonious living environment, all tenants must abide by the following policies:</p>
+                        
+                        <h3>1. REGISTRATION & MOVE-IN</h3>
+                        <ul>
+                            <li>All tenants must complete the Tenant Reservation Form and present at least one valid ID in person.</li>
+                            <li>A security deposit and one (1) month advance rent are required before move-in.</li>
+                            <li>Only registered/approved tenants may occupy the room; no unauthorized overnight guests.</li>
+                        </ul>
+
+                        <h3>2. PAYMENT TERMS</h3>
+                        <ul>
+                            <li>Rent must be paid every 1st–5th day of each month.</li>
+                            <li>Late payments are subject to applicable late fees.</li>
+                            <li>Tenants must request an official receipt for every payment.</li>
+                            <li>Utility bills must be paid within 3 days after issuance.</li>
+                        </ul>
+
+                        <h3>3. VISITOR POLICY</h3>
+                        <ul>
+                            <li>Visitors are allowed only from 8:00 AM to 10:00 PM.</li>
+                            <li>All visitors must log in the visitor's logbook.</li>
+                            <li>Overnight stays are strictly prohibited unless approved for emergencies.</li>
+                        </ul>
+
+                        <h3>4. CLEANLINESS & SANITATION</h3>
+                        <ul>
+                            <li>Tenants must maintain the cleanliness and orderliness of their rooms.</li>
+                            <li>Cooking is allowed only in designated areas.</li>
+                            <li>Proper waste disposal must be observed at all times.</li>
+                            <li>Participation in scheduled general cleaning is required.</li>
+                        </ul>
+
+                        <h3>5. ELECTRICAL APPLIANCES</h3>
+                        <ul>
+                            <li>Only allowed appliances may be used inside rooms, such as electric fans, laptops, and lights.</li>
+                            <li>High-power appliances (induction cookers, heaters, microwaves, etc.) are not allowed inside rooms.</li>
+                            <li>Tenants must turn off all appliances when leaving.</li>
+                        </ul>
+
+                        <h3>6. SAFETY & SECURITY</h3>
+                        <ul>
+                            <li>Gates must remain closed and locked for everyone's safety.</li>
+                            <li>CCTV cameras must not be tampered with or obstructed.</li>
+                            <li>No illegal drugs within the premises.</li>
+                            <li>Lost keys will require a replacement fee.</li>
+                        </ul>
+
+                        <h3>7. DAMAGE & LIABILITY</h3>
+                        <ul>
+                            <li>Tenants will be charged for any damage caused by misuse or negligence.</li>
+                            <li>Management is not liable for lost or stolen personal items—tenants must secure their belongings.</li>
+                            <li>Facility issues must be reported immediately to landlords.</li>
+                        </ul>
+
+                        <h3>8. CONDUCT & BEHAVIOR</h3>
+                        <ul>
+                            <li>Loud noise and disturbances are not allowed, especially after 10:00 PM.</li>
+                            <li>Violence, harassment, or disrespectful behavior is strictly prohibited.</li>
+                            <li>Tenants must maintain harmonious relationships with co-tenants and staff.</li>
+                        </ul>
+
+                        <h3>9. CHECK-OUT & TERMINATION</h3>
+                        <ul>
+                            <li>A 15–30 day notice is required before moving out.</li>
+                            <li>All unpaid balances must be cleared before check-out.</li>
+                            <li>Deposits are refundable after room inspection and deductions for damages (if any).</li>
+                            <li>Management reserves the right to terminate tenancy for repeated violations.</li>
+                        </ul>
+
+                        <h3>10. MANAGEMENT RIGHTS</h3>
+                        <p><strong>Management may:</strong></p>
+                        <ul>
+                            <li>Conduct room inspections with prior notice.</li>
+                            <li>Modify or update rules and regulations as needed.</li>
+                            <li>Approve or deny tenant applications based on compliance.</li>
+                        </ul>
+                    </div>
                 </div>
+                
                 <div id="specialty" class="content-panel">
-                    <p class="content-text">Our specialty includes affordable pricing, 24/7 security, fully furnished rooms, and fast Wi-Fi access.</p>
+                    <div class="content-text">
+                        <p>Casa Villagracia Boarding House stands out because of:</p>
+                        <h3>Student and Worker-Friendly Environment</h3>
+                        <p>Quiet, organized, and designed to support focus and productivity.</p>
+
+                        <h3>Strong Safety Measures</h3>
+                        <p>CCTV surveillance, secure gate access, and responsible management.</p>
+
+                        <h3>Clean and Well-Maintained Facilities</h3>
+                        <p>Regular maintenance ensures a pleasant living environment.</p>
+
+                        <h3>Digital Management System</h3>
+                        <p>Streamlined handling of:</p>
+                        <ul>
+                            <li>Rent payments</li>
+                            <li>Room reservations</li>
+                            <li>Tenant profiles</li>
+                            <li>Announcements</li>
+                        </ul>
+
+                        <h3>Affordable Quality Accommodation</h3>
+                        <p>Ideal for those seeking budget-friendly yet secure and comfortable housing.</p>
+                    </div>
                 </div>
+                
                 <div id="services" class="content-panel">
-                    <p class="content-text">We offer additional services such as laundry, housekeeping, and guided local tours for our tenants.</p>
+                    <div class="content-text">
+                        <h3>SERVICES OFFERED</h3>
+
+                        <h3>1. Room Accommodation Options</h3>
+                        <ul>
+                            <li>Single occupancy rooms</li>
+                            <li>Shared rooms</li>
+                            <li>Upgraded rooms (with optional private amenities)</li>
+                        </ul>
+
+                        <h3>2. Utilities & Amenities</h3>
+                        <ul>
+                            <li>WiFi</li>
+                            <li>Electricity & water (metered or fixed depending on arrangement)</li>
+                            <li>Shared kitchen & dining area</li>
+                            <li>Clean common comfort rooms</li>
+                            <li>Laundry & drying area</li>
+                        </ul>
+
+                        <h3>3. Security & Maintenance</h3>
+                        <ul>
+                            <li>24/7 CCTV monitoring</li>
+                            <li>Regular cleaning of common areas</li>
+                            <li>Secure gate and visitor monitoring</li>
+                        </ul>
+
+                        <h3>4. Tenant Support</h3>
+                        <ul>
+                            <li>Maintenance report</li>
+                            <li>Digital announcements</li>
+                            <li>Responsive management through SMS, call, or online portal</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -702,15 +972,15 @@ body::before {
     <div class="container">
         <div class="facts-grid">
             <div class="fact-card">
-                <h3 class="fact-number">120+</h3>
+                <h3 class="fact-number"><?php echo $happyTenants; ?>+</h3>
                 <p class="fact-label">Happy Tenants</p>
             </div>
             <div class="fact-card">
-                <h3 class="fact-number">50+</h3>
+                <h3 class="fact-number"><?php echo $roomsAvailable; ?></h3>
                 <p class="fact-label">Rooms Available</p>
             </div>
             <div class="fact-card">
-                <h3 class="fact-number">5</h3>
+                <h3 class="fact-number">13</h3>
                 <p class="fact-label">Years of Service</p>
             </div>
             <div class="fact-card">
@@ -735,19 +1005,25 @@ body::before {
                     <span class="contact-icon">
                         <i class="fas fa-map-marker-alt"></i>
                     </span>
-                    <span>Almers Compound, Tabok, Mandaue City</span>
+                    <span>Almers Compound, Tabok, Mandaue City, Cebu</span>
                 </div>
                 <div class="contact-item">
                     <span class="contact-icon">
                         <i class="fas fa-envelope"></i>
                     </span>
-                    <span>villagracia@gmail.com</span>
+                    <span>villagraciajanray@gmail.com</span>
                 </div>
                 <div class="contact-item">
                     <span class="contact-icon">
                         <i class="fas fa-phone"></i>
                     </span>
                     <span>+63 930 913 2995</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </span>
+                    <span>+63 922 345 6458</span>
                 </div>
             </div>
         </div>
@@ -774,6 +1050,72 @@ body::before {
             });
         });
     });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const tabs = document.querySelectorAll('.tab-item');
+    const panels = document.querySelectorAll('.content-panel');
+    const contentWrapper = document.querySelector('.content-wrapper');
+    
+    // Tab switching functionality
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            // Remove active class from all tabs and panels
+            tabs.forEach(t => t.classList.remove('active'));
+            panels.forEach(p => p.classList.remove('active'));
+            
+            // Add active class to clicked tab
+            this.classList.add('active');
+            
+            // Show corresponding panel
+            const contentId = this.getAttribute('data-content');
+            const activePanel = document.getElementById(contentId);
+            activePanel.classList.add('active');
+            
+            // Check if panel needs scroll indicator after a short delay
+            setTimeout(() => {
+                checkScrollable(activePanel);
+            }, 50);
+        });
+    });
+    
+    // Check if content is scrollable
+    function checkScrollable(panel) {
+        if (panel.scrollHeight > panel.clientHeight) {
+            contentWrapper.classList.add('has-scroll');
+        } else {
+            contentWrapper.classList.remove('has-scroll');
+        }
+    }
+    
+    // Check initial active panel
+    const activePanel = document.querySelector('.content-panel.active');
+    if (activePanel) {
+        setTimeout(() => {
+            checkScrollable(activePanel);
+        }, 50);
+    }
+    
+    // Update scroll indicator when scrolling
+    panels.forEach(panel => {
+        panel.addEventListener('scroll', function() {
+            // Hide indicator when scrolled near bottom
+            const isNearBottom = this.scrollTop + this.clientHeight >= this.scrollHeight - 10;
+            if (isNearBottom) {
+                contentWrapper.classList.remove('has-scroll');
+            } else {
+                checkScrollable(this);
+            }
+        });
+    });
+    
+    // Recalculate on window resize
+    window.addEventListener('resize', function() {
+        const activePanel = document.querySelector('.content-panel.active');
+        if (activePanel) {
+            checkScrollable(activePanel);
+        }
+    });
+});
 </script>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

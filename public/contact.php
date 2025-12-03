@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="breadcrumbs-area">
         <div class="breadcrumbs">
-            <span class="first-item"><a href="index.php">Home</a></span>
+            <span class="first-item"><a href="index.php"><i class="fas fa-home"></i> Home</a></span>
             <span class="separator">></span>
             <span class="last-item">Contact us</span>
         </div>
@@ -147,23 +147,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="contact-section">
-        <h2 class="contact-title">Contact us live</h2>
+        <h2 class="contact-title">Get in contact with us</h2>
         <div class="contact-container">
             <div class="contact-info">
                 <div class="contact-info-item">
                     <h3>Mail</h3>
-                    <p>villagracia@gmail.com</p>
+                    <p>villagraciajanray@gmail.com</p>
                 </div>
                 <div class="contact-info-item">
                     <h3>Call</h3>
-                    <p>63+ 9309132995<br>666 35874692050</p>
+                    <p>09309132995<br>09223456458</p>
                 </div>
                 <div class="contact-info-item">
                     <h3>Social account</h3>
                     <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/rodrigo.villagracia.14" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://maps.app.goo.gl/fshUkBj4iUD5zrTWA" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-google"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -171,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="contact-form-wrapper">
                 <div class="form-header">
                     <i class="fas fa-envelope-open-text"></i>
-                    <h3>Send Us A email</h3>
+                    <h3>Send us an email</h3>
                 </div>
 
                 <?php if ($success): ?>

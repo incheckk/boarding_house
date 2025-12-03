@@ -208,7 +208,7 @@
         </form>
 
         <div class="footer-text">
-            © 2025 CASA VILLAGRACIA Boarding House • All rights reserved
+            © 2025 CASA VILLAGRACIA     • All rights reserved
         </div>
     </div>
 </div>
