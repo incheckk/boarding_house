@@ -11,6 +11,7 @@ require_once __DIR__ . '/../../includes/functions.php';
     <title><?= htmlspecialchars($pageTitle) ?></title>
 
     <!-- Fixed CSS path: Now relative to /admin/ (where admin.php is) -->
+     <link rel="stylesheet" href="css/admin_consistent.css">
     <link rel="stylesheet" href="css/admin_style.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">

@@ -510,8 +510,6 @@ $profile_image = "malupiton.jpg"
             At our boarding house, we honor that drive, providing a space where hardworking individuals can recharge, feel supported, 
             and thrive in an environment built for comfort, security, and success.
         </p>
-        
-        <div class="signature">VILLAGRACIA</div>
     </section>
 
     <!-- Scroll to Top Button -->

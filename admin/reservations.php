@@ -7,10 +7,19 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 $pageTitle = "Reservations";
 require_once __DIR__ . '/php/admin-header.php';
 require_once __DIR__ . '/php/admin-sidebar.php';
-require_once __DIR__ . '/../includes/auth.php';  // Ensure admin is logged in
+require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/db.php';
 
 $message = "";
+$messageType = "";
+
+// Check for message from redirect
+if (isset($_SESSION['message'])) {
+    $message = $_SESSION['message'];
+    $messageType = $_SESSION['message_type'];
+    unset($_SESSION['message']);
+    unset($_SESSION['message_type']);
+}
 
 // Handle reservation approval/rejection
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
@@ -34,7 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $roomStatus = $stmt->fetch()['rstat_id'];
 
                 if ($roomStatus == 2) {
-                    $message = "Room is already occupied. Cannot approve.";
+                    $_SESSION['message'] = "Room is already occupied. Cannot approve this reservation.";
+                    $_SESSION['message_type'] = "error";
                 } else {
                     // Update reservation status
                     $stmt = $pdo->prepare("UPDATE reservation SET restat_id = 2 WHERE reservation_id = ?");
@@ -56,10 +66,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     $stmt = $pdo->prepare("DELETE FROM reservation WHERE room_id = ? AND restat_id = 1 AND reservation_id != ?");
                     $stmt->execute([$room_id, $reservation_id]);
 
-                    $message = "Reservation approved, tenant assigned, and other reservations for this room rejected!";
-                    preventResubmission();
+                    $_SESSION['message'] = "Reservation approved successfully! Tenant has been assigned to the room and other pending reservations for this room have been rejected.";
+                    $_SESSION['message_type'] = "success";
                 }
+            } else {
+                $_SESSION['message'] = "Reservation not found.";
+                $_SESSION['message_type'] = "error";
             }
+            
+            // Redirect to prevent form resubmission
+            header("Location: reservations.php");
+            exit();
+            
         } elseif ($action === 'reject') {
             // Get reservation details
             $stmt = $pdo->prepare("SELECT tenant_id, room_id FROM reservation WHERE reservation_id = ?");
@@ -87,15 +105,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $stmt = $pdo->prepare("UPDATE room SET rstat_id = 1 WHERE room_id = ? AND rstat_id != 2");
                 $stmt->execute([$room_id]);
 
-                $message = "Reservation rejected and tenant removed!";
+                $_SESSION['message'] = "Reservation has been rejected successfully. Tenant has been removed from the system.";
+                $_SESSION['message_type'] = "success";
             } else {
-                $message = "Reservation not found.";
+                $_SESSION['message'] = "Reservation not found.";
+                $_SESSION['message_type'] = "error";
             }
+            
+            // Redirect to prevent form resubmission
+            header("Location: reservations.php");
+            exit();
         }
     } catch (PDOException $e) {
-        $message = "Database error: " . $e->getMessage();
+        $_SESSION['message'] = "Database error: " . $e->getMessage();
+        $_SESSION['message_type'] = "error";
+        header("Location: reservations.php");
+        exit();
     }
 }
+
 
 // Handle admin manual reservation form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fname'])) {  // Check for form fields

@@ -12,14 +12,14 @@ $preselectedRoomID = isset($_GET['room_id']) ? intval($_GET['room_id']) : null;
 
 // Handle Form Submit
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $fname = trim($formData['fname']);
-    $mname = trim($formData['mname']);
-    $lname = trim($formData['lname']);
-    $number = trim($formData['number']);
-    $email = trim($formData['email']);
-    $emer = trim($formData['emer_contact']);
-    $room_id = intval($formData['room_id']);
-    $notes = trim($formData['notes']);
+    $fname = isset($formData['fname']) ? trim($formData['fname']) : '';
+    $mname = isset($formData['mname']) ? trim($formData['mname']) : '';
+    $lname = isset($formData['lname']) ? trim($formData['lname']) : '';
+    $number = isset($formData['number']) ? trim($formData['number']) : '';
+    $email = isset($formData['email']) ? trim($formData['email']) : '';
+    $emer = isset($formData['emer_contact']) ? trim($formData['emer_contact']) : '';
+    $room_id = (isset($formData['room_id']) && $formData['room_id'] !== '') ? intval($formData['room_id']) : 0;
+    $notes = isset($formData['notes']) ? trim($formData['notes']) : '';
 
     // Validation
     if (empty($fname) || empty($lname) || empty($number) || empty($email) || empty($emer) || !$room_id) {
@@ -575,16 +575,12 @@ body::before {
                         <?php foreach ($rooms as $r): ?>
                             <option value="<?= $r['room_id'] ?>" 
                                 <?= ($preselectedRoomID == $r['room_id'] && !$_POST) ? 'selected' : '' ?>
-                                <?= (isset($_POST['room_id']) && $_POST['room_id'] == $r['room_id']) ? 'selected' : '' ?>
-                                <?= ($r['rstat_id'] == 3) ? 'disabled style="color: gray;"' : '' ?>>
+                                <?= (isset($_POST['room_id']) && $_POST['room_id'] == $r['room_id']) ? 'selected' : '' ?>>
                                 Room <?= $r['room_number'] ?> 
                                 <?= ($r['rstat_id'] == 3) ? '(Reserved - Pending)' : '' ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
-
-                    <label for="notes">Notes (Optional)</label>
-                    <textarea name="notes" id="notes" rows="4" placeholder="Any specific request or note..."><?php echo htmlspecialchars($formData['notes'] ?? ''); ?></textarea>
 
                     <button type="submit" class="reserve-btn" style="margin-top: 30px;">
                         Submit Reservation

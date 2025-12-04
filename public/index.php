@@ -753,6 +753,9 @@ body::before {
         font-size: 0.95rem;
     }
 }
+
+    .scroll-top{position:fixed;bottom:30px;right:30px;width:50px;height:50px;background:linear-gradient(135deg,#d4af37 0%,#c9a961 100%);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 15px rgba(212,175,55,0.4);transition:all .3s;z-index:100;color:white}
+    .scroll-top:hover{background:linear-gradient(135deg,#c9a961 0%,#b8941f 100%);transform:translateY(-5px);box-shadow:0 6px 20px rgba(212,175,55,0.5)}
 </style>
 
 <section class="hero">
@@ -1029,6 +1032,10 @@ body::before {
         </div>
     </div>
 </section>
+
+<div class="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+    <i class="fas fa-chevron-up"></i>
+</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {

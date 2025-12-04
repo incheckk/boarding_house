@@ -202,6 +202,23 @@ $tenants = $pdo->query("
     LEFT JOIN room r ON rt.room_id = r.room_id
     ORDER BY t.last_name
 ")->fetchAll();
+
+$selectedTenant = null;
+if (isset($_GET['view_tenant'])) {
+    $tenantId = intval($_GET['view_tenant']);
+    $stmt = $pdo->prepare("
+        SELECT 
+            t.first_name, t.last_name, t.middle_name,
+            t.number, t.emergency_number, t.email, t.created_at,
+            ts.tstat_desc AS tenant_status
+        FROM tenant t
+        LEFT JOIN tenant_status ts ON t.tstat_id = ts.tstat_id
+        WHERE t.tenant_id = ?
+        LIMIT 1
+    ");
+    $stmt->execute([$tenantId]);
+    $selectedTenant = $stmt->fetch();
+}
 ?>
 
 <!DOCTYPE html>
@@ -492,6 +509,14 @@ $tenants = $pdo->query("
         .data-table .btn-action i {
             font-size: 14px;
         }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center;
+            z-index: 1000; opacity: 1; visibility: visible; }
+        .modal-box { background: #fff; padding: 30px; border-radius: 12px; max-width: 450px; width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .modal-close-btn { background: #6c757d; color: #fff; border: none; padding: 10px 15px;
+            border-radius: 8px; cursor: pointer; margin-top: 20px; font-weight: 600; float: right; }
     </style>
 
     <main class="main-content">
@@ -625,17 +650,53 @@ $tenants = $pdo->query("
                                     class="status-badge <?php echo strtolower($tenant['status']); ?>"><?php echo htmlspecialchars($tenant['status']); ?></span>
                             </td>
                             <td>
-                                <a href="?edit_tenant=<?php echo $tenant['tenant_id']; ?>" class="btn-action"
-                                    title="Edit"><i class="fas fa-edit"></i></a>
+                                <!-- View tenant modal trigger -->
+                                <a href="?view_tenant=<?php echo $tenant['tenant_id']; ?>" class="btn-action" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="?edit_tenant=<?php echo $tenant['tenant_id']; ?>" class="btn-action" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
                                 <a href="?delete_tenant=<?php echo $tenant['tenant_id']; ?>" class="btn-action warning"
-                                    onclick="return confirm('Remove this tenant?');" title="Remove"><i
-                                        class="fas fa-trash"></i></a>
+                                onclick="return confirm('Remove this tenant?');" title="Remove">
+                                    <i class="fas fa-trash"></i>
+                                </a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
+
+        <?php if ($selectedTenant): ?>
+        <!-- Modal styles (skip if already global) -->
+
+        <div class="modal-overlay">
+            <div class="modal-box">
+                <h2>Tenant Details</h2>
+                <ul class="tenant-details-list">
+                    <li><strong>Full Name:</strong>
+                        <?php echo htmlspecialchars(
+                            ($selectedTenant['first_name'] ?? '') . ' ' .
+                            (!empty($selectedTenant['middle_name']) ? $selectedTenant['middle_name'] . ' ' : '') .
+                            ($selectedTenant['last_name'] ?? '')
+                        ); ?>
+                    </li>
+                    <li><strong>Email:</strong> <?php echo htmlspecialchars($selectedTenant['email'] ?? ''); ?></li>
+                    <li><strong>Contact Number:</strong> <?php echo htmlspecialchars($selectedTenant['number'] ?? ''); ?></li>
+                    <li><strong>Emergency Contact:</strong> <?php echo htmlspecialchars($selectedTenant['emergency_number'] ?? ''); ?></li>
+                    <li><strong>Status:</strong>
+                        <span class="status-badge <?php echo strtolower($selectedTenant['tenant_status'] ?? ''); ?>">
+                            <?php echo htmlspecialchars($selectedTenant['tenant_status'] ?? ''); ?>
+                        </span>
+                    </li>
+                    <li><strong>Created At:</strong> <?php echo htmlspecialchars($selectedTenant['created_at'] ?? ''); ?></li>
+                </ul>
+                <!-- Close button goes back to the page without query string -->
+                <button class="modal-close-btn" onclick="window.location.href='tenant.php'">Close</button>
+            </div>
+        </div>
+    <?php endif; ?>
     </main>
 
     <script>

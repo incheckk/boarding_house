@@ -14,6 +14,7 @@ require_once __DIR__ . '/../includes/db.php';
 $totalRooms = $pdo->query("SELECT COUNT(*) AS count FROM room")->fetch()['count'];
 $occupiedRooms = $pdo->query("SELECT COUNT(*) AS count FROM room WHERE rstat_id = 2")->fetch()['count'];
 $currentOccupancy = $totalRooms > 0 ? round(($occupiedRooms / $totalRooms) * 100, 1) : 0;
+$currentPath = htmlspecialchars(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), ENT_QUOTES, 'UTF-8');
 
 // Fetch historical occupancy (last 12 months)
 $historicalOccupancy = [];
@@ -52,18 +53,56 @@ $avgStay = $pdo->query("
 
 // Fetch tenant details for table (UPDATED: From churned_tenants)
 $tenantDetails = $pdo->query("
-    SELECT CONCAT(first_name, ' ', last_name) AS tenant_name, 
-           check_in_date, 
-           check_out_date,
-           CONCAT(
-               FLOOR(TIMESTAMPDIFF(DAY, check_in_date, check_out_date) / 365), ' year/s ',
-               FLOOR((TIMESTAMPDIFF(DAY, check_in_date, check_out_date) % 365) / 30), ' month/s ',
-               TIMESTAMPDIFF(DAY, check_in_date, check_out_date) % 30, ' day/s'
-           ) AS stay_duration,
-           'Churned' AS status  -- Static status for churned tenants
+    SELECT 
+        tenant_id,
+        CONCAT(first_name, ' ', last_name) AS tenant_name, 
+        check_in_date, 
+        check_out_date,
+        CONCAT(
+            FLOOR(TIMESTAMPDIFF(DAY, check_in_date, check_out_date) / 365), ' year/s ',
+            FLOOR((TIMESTAMPDIFF(DAY, check_in_date, check_out_date) % 365) / 30), ' month/s ',
+            TIMESTAMPDIFF(DAY, check_in_date, check_out_date) % 30, ' day/s'
+        ) AS stay_duration,
+        'Churned' AS status
     FROM churned_tenants
     ORDER BY churn_date DESC
-")->fetchAll();
+")->fetchAll(PDO::FETCH_ASSOC);
+
+$selectedTenant = null;
+if (isset($_GET['view_tenant'])) {
+    $tenantId = intval($_GET['view_tenant']);
+
+    // Active tenant first
+    $stmt = $pdo->prepare("
+        SELECT 
+            t.first_name, t.last_name, t.middle_name,
+            t.number, t.emergency_number, t.email, t.created_at,
+            ts.tstat_desc AS tenant_status
+        FROM tenant t
+        LEFT JOIN tenant_status ts ON t.tstat_id = ts.tstat_id
+        WHERE t.tenant_id = ?
+        LIMIT 1
+    ");
+    $stmt->execute([$tenantId]);
+    $selectedTenant = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Fallback to churned_tenants
+    if (!$selectedTenant) {
+        $stmt = $pdo->prepare("
+            SELECT 
+                first_name, last_name, middle_name,
+                number, emergency_number, email,
+                check_in_date AS created_at,
+                'Churned' AS tenant_status
+            FROM churned_tenants
+            WHERE tenant_id = ?
+            ORDER BY churn_date DESC
+            LIMIT 1
+        ");
+        $stmt->execute([$tenantId]);
+        $selectedTenant = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+}
 ?>
 
 <main class="main-content">
@@ -158,6 +197,7 @@ $tenantDetails = $pdo->query("
                     <th>Check-out Date</th>
                     <th>Stay Duration</th>
                     <th>Status</th>
+                    <th>Actions</th> <!-- New -->
                 </tr>
             </thead>
 
@@ -168,12 +208,61 @@ $tenantDetails = $pdo->query("
                         <td><?php echo htmlspecialchars($tenant['check_in_date']); ?></td>
                         <td><?php echo htmlspecialchars($tenant['check_out_date']); ?></td>
                         <td><?php echo htmlspecialchars($tenant['stay_duration']); ?></td>
-                        <td><span class="status-badge <?php echo strtolower($tenant['status']); ?>"><?php echo htmlspecialchars($tenant['status']); ?></span></td>
+                        <td>
+                            <span class="status-badge <?php echo strtolower(htmlspecialchars($tenant['status'])); ?>">
+                                <?php echo htmlspecialchars($tenant['status']); ?>
+                            </span>
+                        </td>
+                        <td>
+                            <a href="<?php echo $currentPath; ?>?view_tenant=<?php echo (int)$tenant['tenant_id']; ?>" 
+                            class="btn-action" title="View">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
     </section>
+
+<?php if ($selectedTenant): ?>
+    <!-- Modal styles (skip if already global) -->
+    <style>
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center;
+            z-index: 1000; opacity: 1; visibility: visible; }
+        .modal-box { background: #fff; padding: 30px; border-radius: 12px; max-width: 450px; width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .modal-close-btn { background: #6c757d; color: #fff; border: none; padding: 10px 15px;
+            border-radius: 8px; cursor: pointer; margin-top: 20px; font-weight: 600; float: right; }
+    </style>
+
+    <div class="modal-overlay">
+        <div class="modal-box">
+            <h2>Tenant Details</h2>
+            <ul class="tenant-details-list">
+                <li><strong>Full Name:</strong>
+                    <?php echo htmlspecialchars(
+                        ($selectedTenant['first_name'] ?? '') . ' ' .
+                        (!empty($selectedTenant['middle_name']) ? $selectedTenant['middle_name'] . ' ' : '') .
+                        ($selectedTenant['last_name'] ?? '')
+                    ); ?>
+                </li>
+                <li><strong>Email:</strong> <?php echo htmlspecialchars($selectedTenant['email'] ?? ''); ?></li>
+                <li><strong>Contact Number:</strong> <?php echo htmlspecialchars($selectedTenant['number'] ?? ''); ?></li>
+                <li><strong>Emergency Contact:</strong> <?php echo htmlspecialchars($selectedTenant['emergency_number'] ?? ''); ?></li>
+                <li><strong>Status:</strong>
+                    <span class="status-badge <?php echo strtolower($selectedTenant['tenant_status'] ?? ''); ?>">
+                        <?php echo htmlspecialchars($selectedTenant['tenant_status'] ?? ''); ?>
+                    </span>
+                </li>
+                <li><strong>Created At:</strong> <?php echo htmlspecialchars($selectedTenant['created_at'] ?? ''); ?></li>
+            </ul>
+            <!-- Close button goes back to the page without query string -->
+            <button class="modal-close-btn" onclick="window.location.href='<?php echo $currentPath; ?>'">Close</button>
+        </div>
+    </div>
+<?php endif; ?>
 </main>
 
 <!-- Chart.js for Historical Trends -->
