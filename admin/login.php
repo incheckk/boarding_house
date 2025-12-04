@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login | CASA VILLAGRACIA</title>
 
+    <!-- Font Awesome + Google Fonts (same as admin panel) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 
@@ -37,6 +38,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Matching Header Logo Style */
         .login-logo {
             background: #1a1a1a;
             padding: 35px 40px;
@@ -48,7 +50,7 @@
             width: 90px;
             height: auto;
             margin-bottom: 12px;
-            filter: brightness(0) invert(1);
+            filter: brightness(0) invert(1); /* Makes logo white if it's colored */
         }
 
         .login-logo a {
@@ -168,6 +170,7 @@
 <body>
 
 <div class="login-container">
+    <!-- Matching Header Logo -->
     <div class="login-logo">
         <img src="images/c1.png" alt="Casa Villagracia Logo">
         <a href="#">CASA VILLAGRACIA</a>
