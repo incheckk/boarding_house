@@ -3,15 +3,6 @@ $pageTitle = "Rooms";
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/header.php';
 
-/*
-  rooms.php
-  - Filters: type (single|double|bunk), price_min, price_max
-  - Sorting: sort=price_asc|price_desc
-  - Availability: available=1 (only rooms where rs.rstat_desc = 'Vacant')
-  - Pagination: page (default 1), per_page (default 9)
-  - AJAX: if ajax=1 return only the rooms-grid html fragment
-*/
-
 /* -------------------------
    Helper: map incoming type -> DB value
    ------------------------- */
@@ -158,6 +149,8 @@ function render_rooms_grid($rooms)
         $statusClass = 'status-available';
         if (strpos($statusLower, 'occupied') !== false) {
             $statusClass = 'status-occupied';
+        } elseif (strpos($statusLower, 'reserved') !== false) {
+            $statusClass = 'status-reserved';
         } elseif (strpos($statusLower, 'maintenance') !== false) {
             $statusClass = 'status-maintenance';
         }
@@ -166,7 +159,7 @@ function render_rooms_grid($rooms)
         if ($statusLower === 'occupied') {
             $reserveBtn = '
                 <a class="btn-reserve disabled" href="#" 
-                    onclick="alert(\'Can’t reserve room because it’s occupied.\'); return false;">
+                    onclick="alert(\'Can\'t reserve room because it\'s occupied.\'); return false;">
                     <i class="fas fa-calendar-times"></i> Reserve
                 </a>';
         } else {
@@ -471,6 +464,11 @@ function build_page_url($newPage)
         color: #5f2d2d;
     }
 
+    .status-reserved {
+        background: linear-gradient(135deg, #fff4cc 0%, #ffeb99 100%);
+        color: #6b5a00;
+    }
+
     .status-maintenance {
         background: linear-gradient(135deg, #f4e5c0 0%, #d4af37 100%);
         color: #5f4d2d;
@@ -596,7 +594,6 @@ function build_page_url($newPage)
         cursor: not-allowed;
         opacity: 0.7;
         pointer-events: auto;
-        /* allow the alert to trigger */
     }
 
     .btn-reserve.disabled:hover {
@@ -604,7 +601,6 @@ function build_page_url($newPage)
         border-color: #bbb;
         transform: none;
     }
-
 
     /* ====== NO RESULTS ====== */
     .no-results-container {
@@ -779,37 +775,89 @@ function build_page_url($newPage)
         transform: translateY(-5px);
         box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
     }
+
+    .price-error {
+        background-color: #fee;
+        border-left: 4px solid #dc3545;
+        color: #721c24;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .price-error i {
+        margin-right: 8px;
+        color: #dc3545;
+    }
+
+    .price-error strong {
+        font-weight: 600;
+    }
 </style>
 
 <section class="rooms-section">
     <h2 class="page-title">Available Rooms</h2>
 
-    <!-- FILTER SUMMARY -->
-    <?php if (!empty($_GET) && (isset($_GET['type']) || isset($_GET['price_min']) || isset($_GET['price_max']) || isset($_GET['sort']) || isset($_GET['available']))): ?>
-        <p class="filter-results">
-            <i class="fas fa-filter"></i> Showing results for:
-            <?php
-            $filters = [];
-            if (!empty($_GET['type'])) {
-                $filters[] = "<strong>Type:</strong> " . htmlspecialchars($_GET['type']);
-            }
-            if (!empty($_GET['price_min'])) {
-                $filters[] = "<strong>Min Price:</strong> ₱" . htmlspecialchars($_GET['price_min']);
-            }
-            if (!empty($_GET['price_max'])) {
-                $filters[] = "<strong>Max Price:</strong> ₱" . htmlspecialchars($_GET['price_max']);
-            }
-            if (!empty($_GET['sort'])) {
-                $sortLabel = $_GET['sort'] == 'price_asc' ? 'Price: Low → High' : 'Price: High → Low';
-                $filters[] = "<strong>Sort:</strong> " . $sortLabel;
-            }
-            if (!empty($_GET['available'])) {
-                $filters[] = "<strong>Only Available Rooms</strong>";
-            }
-            echo implode(' • ', $filters);
-            ?>
-        </p>
-    <?php endif; ?>
+<?php
+// Price validation at the top of your rooms.php file
+$priceError = false;
+if (!empty($_GET['price_min']) && !empty($_GET['price_max'])) {
+    if ($_GET['price_max'] < $_GET['price_min']) {
+        $priceError = true;
+    }
+}
+?>
+
+<?php if ($priceError): ?>
+    <div class="price-error">
+        <i class="fas fa-exclamation-circle"></i>
+        <strong>Invalid Price Range:</strong> Maximum price (₱<?php echo number_format($_GET['price_max']); ?>) cannot be lower than minimum price (₱<?php echo number_format($_GET['price_min']); ?>). 
+        Please adjust your filters.
+    </div>
+<?php endif; ?>
+
+<?php if (!$priceError && !empty($_GET) && (isset($_GET['type']) || isset($_GET['price_min']) || isset($_GET['price_max']) || isset($_GET['sort']) || isset($_GET['available']))): ?>
+    <p class="filter-results">
+        <i class="fas fa-filter"></i> <strong>Showing results for:</strong>
+        <?php
+        $filters = [];
+        
+        // Room Type
+        if (!empty($_GET['type'])) {
+            $typeLabels = [
+                'single' => 'Single Room',
+                'double' => 'Double Room',
+                'bunk' => 'Bunk Bed Room'
+            ];
+            $typeDisplay = $typeLabels[$_GET['type']] ?? ucfirst($_GET['type']);
+            $filters[] = $typeDisplay;
+        }
+        
+        // Price Range
+        if (!empty($_GET['price_min']) && !empty($_GET['price_max'])) {
+            $filters[] = "₱" . number_format($_GET['price_min']) . " to ₱" . number_format($_GET['price_max']);
+        } elseif (!empty($_GET['price_min'])) {
+            $filters[] = "Starting from ₱" . number_format($_GET['price_min']);
+        } elseif (!empty($_GET['price_max'])) {
+            $filters[] = "Up to ₱" . number_format($_GET['price_max']);
+        }
+        
+        // Sort Order
+        if (!empty($_GET['sort'])) {
+            $sortLabel = $_GET['sort'] == 'price_asc' ? 'Lowest Price First' : 'Highest Price First';
+            $filters[] = $sortLabel;
+        }
+        
+        // Availability
+        if (!empty($_GET['available'])) {
+            $filters[] = "Available Rooms Only";
+        }
+        
+        echo implode(' | ', $filters);
+        ?>
+    </p>
+<?php endif; ?>
 
     <!-- SORT / PER PAGE CONTROLS -->
     <div class="controls">

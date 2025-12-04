@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header('Location: login.php');
+    exit();
+}
 $pageTitle = "Room Management";
 require_once __DIR__ . '/php/admin-header.php';
 require_once __DIR__ . '/php/admin-sidebar.php';

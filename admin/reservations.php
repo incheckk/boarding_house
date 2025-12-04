@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header('Location: login.php');
+    exit();
+}
 $pageTitle = "Reservations";
 require_once __DIR__ . '/php/admin-header.php';
 require_once __DIR__ . '/php/admin-sidebar.php';
@@ -348,6 +353,12 @@ if (isset($_GET['view_tenant'])) {
             color: #ff3b30;
         }
 
+        .status-badge.prospective {
+            background: rgba(255, 149, 0, 0.1);
+            /* Match pending color for prospective tenants */
+            color: #ff9500;
+        }
+
         /* Buttons */
         .btn-action {
             padding: 6px 10px;
@@ -405,42 +416,97 @@ if (isset($_GET['view_tenant'])) {
         }
 
         /* Modal */
+        /* ===== Modal Styles - Standardized and Improved ===== */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
+            /* Slightly darker overlay */
             display: flex;
             justify-content: center;
             align-items: center;
+            z-index: 1000;
+            /* Ensure it's on top of everything */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
         }
 
         .modal-box {
             background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            max-width: 500px;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 450px;
             width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal-box {
+            transform: scale(1);
         }
 
         .modal-box h2 {
             margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #1d1d1f;
+            border-bottom: 1px solid #eee;
+            /* Separator for header */
+            padding-bottom: 10px;
+        }
+
+        /* Consistent detail list style */
+        .tenant-details-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .tenant-details-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #f5f5f5;
+            /* Subtle separation for details */
+            font-size: 15px;
+            color: #333;
+        }
+
+        .tenant-details-list strong {
+            display: inline-block;
+            width: 150px;
+            /* Align labels consistently */
+            font-weight: 600;
+            color: #1d1d1f;
         }
 
         .modal-close-btn {
-            background: #007aff;
+            background: #6c757d;
+            /* Standard 'Secondary' color for close */
             color: #fff;
             border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
+            padding: 10px 15px;
+            border-radius: 8px;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 20px;
+            font-weight: 600;
+            transition: background 0.2s;
+            float: right;
+            /* Align close button to the right */
         }
 
         .modal-close-btn:hover {
-            opacity: 0.85;
+            background: #5a6268;
+            opacity: 1;
+            /* Override the general button opacity hover */
         }
 
         @media(max-width:768px) {
@@ -580,20 +646,26 @@ if (isset($_GET['view_tenant'])) {
         <div class="modal-overlay show">
             <div class="modal-box">
                 <h2>Tenant Details</h2>
-                <p><strong>Full Name:</strong>
-                    <?php echo htmlspecialchars($selectedTenant['first_name'] . ' ' . $selectedTenant['middle_name'] . ' ' . $selectedTenant['last_name']); ?>
-                </p>
-                <p><strong>Email:</strong> <?php echo htmlspecialchars($selectedTenant['email']); ?></p>
-                <p><strong>Contact Number:</strong> <?php echo htmlspecialchars($selectedTenant['number']); ?></p>
-                <p><strong>Emergency Contact:</strong> <?php echo htmlspecialchars($selectedTenant['emergency_number']); ?>
-                </p>
-                <p><strong>Status:</strong> <?php echo htmlspecialchars($selectedTenant['tenant_status']); ?></p>
-                <p><strong>Created At:</strong> <?php echo htmlspecialchars($selectedTenant['created_at']); ?></p>
+                <ul class="tenant-details-list">
+                    <li><strong>Full Name:</strong>
+                        <?php echo htmlspecialchars($selectedTenant['first_name'] . ' ' . ($selectedTenant['middle_name'] ? $selectedTenant['middle_name'] . ' ' : '') . $selectedTenant['last_name']); ?>
+                    </li>
+                    <li><strong>Email:</strong> <?php echo htmlspecialchars($selectedTenant['email']); ?></li>
+                    <li><strong>Contact Number:</strong> <?php echo htmlspecialchars($selectedTenant['number']); ?></li>
+                    <li><strong>Emergency Contact:</strong>
+                        <?php echo htmlspecialchars($selectedTenant['emergency_number']); ?>
+                    </li>
+                    <li><strong>Status:</strong> <span
+                            class="status-badge <?php echo strtolower($selectedTenant['tenant_status']); ?>"><?php echo htmlspecialchars($selectedTenant['tenant_status']); ?></span>
+                    </li>
+                    <li><strong>Created At:</strong> <?php echo htmlspecialchars($selectedTenant['created_at']); ?></li>
+                </ul>
                 <button onclick="window.location.href='reservations.php'" class="modal-close-btn">Close</button>
             </div>
         </div>
     <?php endif; ?>
 </main>
+<button type="submit" class="btn-action confirm-reservation">Confirm Reservation</button>
 <button type="submit" class="btn-action confirm-reservation">Confirm Reservation</button>
 
 <script>console.log("Reservations page loaded.");</script>

@@ -456,8 +456,8 @@ $profile_image = "malupiton.jpg"
 <body>
     <!-- About Hero Section -->
     <section class="about-hero">
-        <h1>About</h1>
-        <p>About our company</p>
+        <h1>About Us</h1>
+        <p>About our Boarding House</p>
     </section>
 
     <!-- Breadcrumb - Updated to match Reservation page -->
@@ -483,15 +483,14 @@ $profile_image = "malupiton.jpg"
             </div>
             <div class="content-right">
                 <p>
-                    Our boarding house offers the best rent service designed to make your life easier, giving you a
-                    comfortable place to stay where you can focus on enjoying your days instead of stressing about where
-                    to live. We make sure every part of your stay feels simple and convenient, from the cleanliness of
-                    your room to the support you receive whenever you need help. You can settle in with confidence
-                    knowing that the environment is safe, peaceful, and built to support your daily routine. Whether
-                    you're a student, a worker, or someone looking for a calm place to call home, our boarding house is
-                    meant to give you a balanced life where comfort, security, and quality come together. Here, you can
-                    relax, stay productive, and enjoy your life without the usual worries that come with finding a good
-                    place to stay.
+                    Our boarding house is committed to providing a hassle-free living experience where comfort, convenience, and security come together. 
+                    We offer clean, well-maintained rooms and reliable support so you can focus on your studies, work, or personal goals 
+                    without worrying about your living arrangements. Every aspect of your stay is designed to feel simple and stress-free — 
+                    from the safety of the environment to the quality of service you receive. <br><br>
+
+                    Whether you're a student, a working professional, or someone seeking a peaceful and dependable
+                    place to stay, our boarding house ensures a balanced lifestyle. Here, you can settle in with confidence,
+                    enjoy a welcoming atmosphere, and live comfortably while having everything you need to feel at home.
                 </p>
             </div>
         </div>
@@ -500,14 +499,16 @@ $profile_image = "malupiton.jpg"
     <!-- Profile Section -->
     <section class="profile-section">
         <div class="profile-image">
-            <img src="assets/images/malupiton.jpg" alt="Mr. Villagracia">
+            <img src="assets/images/landlord.jpg" alt="Mr. Villagracia">
         </div>
-        <h2 class="profile-name">Mrs. Villagracia</h2>
-        <p class="profile-title">Admin/Owner</p>
+        <h2 class="profile-name">Mr. & Mrs. Villagracia</h2>
+        <p class="profile-title">Landlords</p>
         <p class="profile-bio">
-            The person responsible for keeping the website updated, secure, and organized, making sure that every
-            feature works correctly, all content is accurate, and any issues are quickly resolved, so that everyone who
-            visits or uses the site can do so smoothly, safely, and without any problems or interruptions.
+            These two people works tirelessly every day, overcoming challenges and pushing 
+            through obstacles, achieving remarkable milestones through dedication and resilience.
+            Their efforts reflect a relentless commitment to excellence, inspiring others by the lengths they go to in order to succeed. <br><br>
+            At our boarding house, we honor that drive, providing a space where hardworking individuals can recharge, feel supported, 
+            and thrive in an environment built for comfort, security, and success.
         </p>
         
         <div class="signature">VILLAGRACIA</div>
